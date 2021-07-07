@@ -29,8 +29,18 @@ pub fn judge(job_id:&str,question_id:u32){
     
     let test_points=test_bench_dir.read_dir().unwrap();
     
-    let mut id=0;
     for test_point in test_points{
+        
+        let id=test_point
+            .as_ref()
+            .unwrap()
+            .path()
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .parse::<u32>()
+            .unwrap();
         
         let test_point=test_point
             .unwrap()
@@ -40,14 +50,13 @@ pub fn judge(job_id:&str,question_id:u32){
             .unwrap();
             
         judge_test_point(&test_point,&job_dir,id);
-        id=id+1;
         
     }
 }
 
 use std::process::Command;
 
-fn judge_test_point(test_point:&str,job_dir:&str,id:i32){
+fn judge_test_point(test_point:&str,job_dir:&str,id:u32){
     //todo:Result<(),()>
     
     //cmd:iverilog code tb

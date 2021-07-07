@@ -10,13 +10,23 @@ struct Question{
     test_bench:Document,
 }
 
-pub fn fetch_question_by_id(question_id:u32){
-    let question_folder=get_env("QUESTION_FOLDER");
+pub fn fetch_question_by_id(question_id:u32)->Result<(),()>{
+    let question_folder=get_env("QUESTION_FOLDER")+"/"+&question_id.to_string();
+    
+    // if let Ok(metadata)=fs::metadata(question_folder.clone()+"/0"){
+    //     if let Ok(time)=metadata.modified(){
+    //     }
+    // }
+    
+    
     let url=get_env("API_URL")+"/question/"+&(question_id.to_string());
     let resp = reqwest::blocking::get(url)
         .unwrap()
         .json::<Question>()
         .unwrap();
-    println!("{:?}",resp);
+    
+        
+    println!("{:?}",&resp);
+    Ok(())
 }
     

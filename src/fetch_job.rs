@@ -4,11 +4,11 @@ use std::fs::{self,File};
 use std::io::prelude::*;
 use std::time::UNIX_EPOCH;
 use crate::env::get_env;
-use crate::fetch_question::fetch_question_by_id;
+use crate::fetch_testbench::fetch_testbench_by_id;
 use std::process::Command;
 
 
-pub fn fetch_job(){
+pub fn fetch_job()->Option<(String,u32)>{
     let key=get_env("JUDGER_KEY");
     let id=get_env("JUDGER_ID");
     
@@ -26,7 +26,7 @@ pub fn fetch_job(){
             job=res;
     }else{
         //empty queue
-        return;
+        return None;
     }
         
     println!("{:?}",&job);
@@ -35,12 +35,12 @@ pub fn fetch_job(){
     let update=job.update;
     let code=job.code;
     let job_id=job._id.to_hex();
-    let question_folder=get_env("JUDGER_HOME")+"/questions/"+&question_id.to_string();
+    let testbench_folder=get_env("JUDGER_HOME")+"/testbenches/"+&question_id.to_string();
     
     let job_dir=get_env("JUDGER_HOME")+"/jobs/"+&job_id;
     
     let mut fetch=true;
-    if let Ok(metadata)=fs::metadata(question_folder.clone()+"/0"){
+    if let Ok(metadata)=fs::metadata(testbench_folder.clone()+"/0"){
         if let Ok(time)=metadata.modified(){
             if let Ok(time)=time.duration_since(UNIX_EPOCH){
                 if(update<time.as_millis() as u32){
@@ -51,7 +51,7 @@ pub fn fetch_job(){
     }
     
     if(fetch){
-        fetch_question_by_id(question_id);
+        fetch_testbench_by_id(question_id);
     }
     
     //cmd:mkdir -p job_dir
@@ -62,7 +62,8 @@ pub fn fetch_job(){
     
     fs::write(&(job_dir+"/code"),code).unwrap();
     
-    judge(&job_id,question_id);
+    return Some((job_id,question_id));
+    
 }
 
 use crate::judge::judge;

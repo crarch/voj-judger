@@ -7,7 +7,7 @@ pub fn return_result(result:&Document){
     
     let client=reqwest::blocking::Client::new();
     
-    let res=client.post(&url)
+    let _res=client.post(&url)
         .header("Authorization",key)
         .json(result)
         .send().unwrap();

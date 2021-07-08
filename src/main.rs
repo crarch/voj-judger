@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+#![allow(unused_assignments,dead_code,unused_must_use)]
 
 mod fetch_testbench;
 mod fetch_job;

@@ -1,6 +1,6 @@
 use crate::env::get_env;
 use std::path::Path;
-use serde::{Deserialize,Serialize};
+
 use bson::Document;
 use bson::doc;
 
@@ -65,7 +65,7 @@ pub fn judge(job_id:&str,testbench_id:u32)->Result<Document,()>{
             },
             Some(wave)=>{
                 success=false;
-                if(wave.contains_key("compile_error")){
+                if wave.contains_key("compile_error") {
                     test_benches.insert(
                         "compile_error",
                         wave.get_str("compile_error").unwrap().to_string()
@@ -91,7 +91,7 @@ pub fn judge(job_id:&str,testbench_id:u32)->Result<Document,()>{
 }
 
 use std::process::Command;
-use bson::oid::ObjectId;
+
 
 fn judge_test_point(test_point:&str,job_dir:&str,id:u32)->Option<Document>{
     //todo:Result<(),()>
@@ -105,7 +105,7 @@ fn judge_test_point(test_point:&str,job_dir:&str,id:u32)->Option<Document>{
     //todo:pass compile error message
     let std_err=test.output().unwrap().stderr;
     let std_err=String::from_utf8(std_err).unwrap();
-    if(std_err!=""){
+    if std_err!="" {
         let result=doc!{
             "compile_error":std_err,
         };

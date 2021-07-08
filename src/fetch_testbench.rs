@@ -1,13 +1,13 @@
 use bson::Document;
 use serde::{Deserialize,Serialize};
-use std::fs::{self,File};
-use std::io::prelude::*;
-use std::time::UNIX_EPOCH;
+use std::fs::{self};
+
+
 use crate::env::get_env;
 use std::process::Command;
 
 #[derive(Debug,Serialize,Deserialize)]
-struct testbench{
+struct TestBench{
     _id:u32,
     update:u32,
     test_bench:Document,
@@ -19,7 +19,7 @@ pub fn fetch_testbench_by_id(testbench_id:u32)->Result<(),()>{
     let url=get_env("API_URL")+"/testbench/"+&(testbench_id.to_string());
     let resp = reqwest::blocking::get(url)
         .unwrap()
-        .json::<testbench>()
+        .json::<TestBench>()
         .unwrap();
     
     //create new folder

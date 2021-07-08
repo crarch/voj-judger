@@ -12,5 +12,4 @@ pub fn return_result(result:&Document){
         .json(result)
         .send().unwrap();
     
-    println!("{}",result);
 }

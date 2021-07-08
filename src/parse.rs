@@ -5,6 +5,7 @@ use std::collections::HashMap;
 
 use bson::Document;
 use bson::doc;
+use bson::Bson;
 
 #[derive(Debug)]
 enum Wave{
@@ -163,18 +164,53 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     }else{
         end=length;
     }
+    
+    
 
-    let mut signal:Vec<Document>=Vec::new();
+    let mut signal:Vec<Bson>=Vec::new();
+    
+    let mut debug:Vec<Bson>=Vec::new();
+    debug.push(bson::Bson::String("Debug".to_string()));
+    
+    let mut reference:Vec<Bson>=Vec::new();
+    reference.push(bson::Bson::String("Reference".to_string()));
+    
+    let mut yours:Vec<Bson>=Vec::new();
+    yours.push(bson::Bson::String("Yours".to_string()));
+    
+    let mut mismatch=doc!{};
 
     for key in order.iter(){
         if let Some(value)=waves.get(key){
             match value{
                 Wave::Single((w,name))=>{
-                    let wave=doc!(
-                        "name":name,
-                        "wave":w[i..end].into_iter().collect::<String>()
-                    );
-                    signal.push(wave);
+                    if(name.starts_with("yours_")){
+                        let name=(&name[6..]).to_string();
+                        let wave=doc!(
+                            "name":name,
+                            "wave":w[i..end].into_iter().collect::<String>()
+                        );
+                        yours.push(bson::Bson::Document(wave));
+                    }else if(name.starts_with("ref_")){
+                        let name=(&name[4..]).to_string();
+                        let wave=doc!(
+                            "name":name,
+                            "wave":w[i..end].into_iter().collect::<String>()
+                        );
+                        reference.push(bson::Bson::Document(wave));
+                    }else if(name=="mismatch"){
+                        let wave=doc!(
+                            "name":name,
+                            "wave":w[i..end].into_iter().collect::<String>()
+                        );
+                        mismatch=wave;
+                    }else{
+                        let wave=doc!(
+                            "name":name,
+                            "wave":w[i..end].into_iter().collect::<String>()
+                        );
+                        debug.push(bson::Bson::Document(wave));
+                    }
                 },
                 Wave::Multi((w,words,name))=>{
                     let mut data=words[0].clone();
@@ -183,16 +219,53 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                     for iter in words_iter{
                         data=data+" "+iter;
                     }
-                    let wave=doc!(
-                        "name":name,
-                        "wave":w[i..end].into_iter().collect::<String>(),
-                        "data":data
-                    );
-                    signal.push(wave);
+                    if(name.starts_with("yours_")){
+                        let name=(&name[6..]).to_string();
+                        let wave=doc!(
+                            "name":name,
+                            "wave":w[i..end].into_iter().collect::<String>(),
+                            "data":data
+                        );
+                        yours.push(bson::Bson::Document(wave));
+                    }else if(name.starts_with("ref_")){
+                        let name=(&name[4..]).to_string();
+                        let wave=doc!(
+                            "name":name,
+                            "wave":w[i..end].into_iter().collect::<String>(),
+                            "data":data
+                        );
+                        reference.push(bson::Bson::Document(wave));
+                    }else if(name=="mismatch"){
+                        let wave=doc!(
+                            "name":name,
+                            "wave":w[i..end].into_iter().collect::<String>(),
+                            "data":data
+                        );
+                        mismatch=wave;
+                    }else{
+                        let wave=doc!(
+                            "name":name,
+                            "wave":w[i..end].into_iter().collect::<String>(),
+                            "data":data
+                        );
+                        debug.push(bson::Bson::Document(wave));
+                    }
                 },
             }
         }
     }
+    
+    if(debug.len()>1){
+        signal.push(bson::Bson::Array(debug));
+        signal.push(bson::Bson::Document(doc!{}));
+    }
+    
+    signal.push(bson::Bson::Array(yours));
+    signal.push(bson::Bson::Document(doc!{}));
+    
+    signal.push(bson::Bson::Array(reference));
+    
+    signal.push(bson::Bson::Document(mismatch));
     
     let result=doc!{
         "head":doc!{"tock":1},

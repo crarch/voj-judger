@@ -17,15 +17,17 @@ pub fn fetch_job()->Option<(String,u32)>{
     
     let job;
     
-    if let Ok(res) = client.get(url)
+    if let Ok(response) = client.get(url)
         .header("Authorization",key)
         .header("JudgerID",id)
-        .send()
-        .unwrap()
-        .json::<Job>(){
-            job=res;
-    }else{
+        .send(){
+        if let Ok(body)=response.json::<Job>(){
+            job=body;
+        }else{
         //empty queue
+        return None;
+        }
+    }else{
         return None;
     }
         

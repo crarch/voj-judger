@@ -8,7 +8,7 @@ pub fn judge(job_id:&str,question_id:u32){
         +&(question_id.to_string());
     
     let job_dir=get_env("JUDGER_HOME")
-        +"/job/"
+        +"/jobs/"
         +job_id;
     
     //rm a.out

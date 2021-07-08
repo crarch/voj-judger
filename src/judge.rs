@@ -88,4 +88,14 @@ fn judge_test_point(test_point:&str,job_dir:&str,id:u32){
     mv.arg(format!("{}/vcd/{}.vcd",job_dir,id));
     mv.current_dir(job_dir);
     mv.output().unwrap();
+    
+    //parse vcd
+    // parse(
+    //     &format!("{}/vcd/{}.vcd",job_dir,id),
+    //     &format!("{}/vcd/{}.json",job_dir,id)
+    // );
+    
+    //clean
+    //cmd:rm {id}.vcd
+    
 }

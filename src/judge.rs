@@ -24,7 +24,7 @@ pub fn judge(job_id:&str,testbench_id:u32)->Result<Document,()>{
         let result=doc!{
             "_id":job_id.to_string(),
             "success":false,
-            "test_bench":"System Error",
+            "system_error":"System Error",
         };
         return Ok(result);
     }

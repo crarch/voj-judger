@@ -132,7 +132,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                             let line_v:Vec<&str>=line.split(' ').collect();
                             if let Some(Wave::Multi((w,data)))=waves.get_mut(line_v[1]){
                                 w.push('=');
-                                data.push(line_v[0][1..].to_string());
+                                data.push(binary_to_hex(&line_v[0][1..]));
                             }
                         },
                         _ => (),
@@ -359,3 +359,8 @@ pub fn parse(input_vcd:&str)->Option<Document>{
 }
     
     
+
+fn binary_to_hex(val: &str) -> String {
+    let n: u32 = u32::from_str_radix(val, 2).unwrap();
+    format!("{:X}", n)
+}

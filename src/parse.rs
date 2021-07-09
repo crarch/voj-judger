@@ -110,6 +110,13 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                                 w.push('0');
                             }
                         },
+                        
+                        Some("z") => { 
+                            let wire=line.get(1..).unwrap();
+                            if let Some(Wave::Single((w,_)))=waves.get_mut(wire){
+                                w.push('z');
+                            }
+                        },
                         Some(_x) => {
                             let line_v:Vec<&str>=line.split(' ').collect();
                             if let Some(Wave::Multi((w,data,_)))=waves.get_mut(line_v[1]){
@@ -268,7 +275,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     signal.push(bson::Bson::Document(mismatch));
     
     let result=doc!{
-        "head":doc!{"tock":1},
+        "head":doc!{"tock":i+1},
         "signal":signal,
     };
     

@@ -275,7 +275,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     signal.push(bson::Bson::Document(mismatch));
     
     let result=doc!{
-        "head":doc!{"tock":i+1},
+        "head":doc!{"tock":(i+1) as u32},
         "signal":signal,
     };
     

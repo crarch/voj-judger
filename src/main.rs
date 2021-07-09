@@ -1,4 +1,5 @@
 #![allow(unused_assignments,dead_code,unused_must_use,unused_parens)]
+use std::{thread, time};
 
 mod fetch_testbench;
 mod fetch_job;
@@ -17,6 +18,13 @@ pub use return_result::return_result;
 pub use clean::clean_dir;
 
 fn main(){
-    worker::start();
+    let sleep_time=time::Duration::from_millis(1000);
+    loop{
+        if let Some((job_id,question_id))=fetch_job(){
+            thread::spawn(move ||worker::start(job_id,question_id));
+        }else{
+            thread::sleep(sleep_time);
+        }
+    }
 }
 

@@ -72,7 +72,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                                 match wave{
                                     Wave::Single((w,_))=>{
                                         loop{
-                                            if w.len()+1<clock {
+                                            if w.len()<clock {
                                                 w.push('.');
                                             }else{
                                                 break;
@@ -81,7 +81,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                                     },
                                     Wave::Multi((w,_,_))=>{
                                         loop{
-                                            if w.len()+1<clock {
+                                            if w.len()<clock {
                                                 w.push('.');
                                             }else{
                                                 break;
@@ -131,9 +131,31 @@ pub fn parse(input_vcd:&str)->Option<Document>{
         }else{
             break;
         }
-        
-        
     }
+    
+    for (_mark,wave) in &mut waves{
+        match wave{
+            Wave::Single((w,_))=>{
+                loop{
+                    if w.len()<clock {
+                        w.push('.');
+                    }else{
+                        break;
+                    }
+                }
+            },
+            Wave::Multi((w,_,_))=>{
+                loop{
+                    if w.len()<clock {
+                        w.push('.');
+                    }else{
+                        break;
+                    }
+                }
+            },
+        }
+    }
+
     
     let mut i=0;
     let length;
@@ -158,8 +180,8 @@ pub fn parse(input_vcd:&str)->Option<Document>{
         return None;
     } 
     
-    if i>=20 {
-        i=i-20;
+    if i>=19 {
+        i=i-19;
     }else{
         i=0;
     }
@@ -173,6 +195,25 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     }
     
     
+    //avoid wave:.........
+    for (_mark,wave) in &mut waves{
+        match wave{
+            Wave::Single((w,_))=>{
+                let mut iter=i;
+                while(w[iter]=='.'){
+                    iter=iter-1;
+                }
+                w[i]=w[iter];
+            },
+            Wave::Multi((w,_,_))=>{
+                let mut iter=i;
+                while(w[iter]=='.'){
+                    iter=iter-1;
+                }
+                w[i]=w[iter];
+            },
+        }
+    }
 
     let mut signal:Vec<Bson>=Vec::new();
     
@@ -191,6 +232,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
         if let Some(value)=waves.get(key){
             match value{
                 Wave::Single((w,name))=>{
+                    
                     if(name.starts_with("yours_")){
                         let name=(&name[6..]).to_string();
                         let wave=doc!(
@@ -275,7 +317,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     signal.push(bson::Bson::Document(mismatch));
     
     let result=doc!{
-        "head":doc!{"tock":(i+1) as u32},
+        "head":doc!{"tock":i as u32},
         "signal":signal,
     };
     

@@ -220,6 +220,9 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     let mut debug:Vec<Bson>=Vec::new();
     debug.push(bson::Bson::String("Debug".to_string()));
     
+    let mut input:Vec<Bson>=Vec::new();
+    input.push(bson::Bson::String("Input".to_string()));
+    
     let mut reference:Vec<Bson>=Vec::new();
     reference.push(bson::Bson::String("Reference".to_string()));
     
@@ -233,20 +236,27 @@ pub fn parse(input_vcd:&str)->Option<Document>{
             match value{
                 Wave::Single((w,name))=>{
                     
-                    if(name.starts_with("yours_")){
-                        let name=(&name[6..]).to_string();
+                    if(name.starts_with("y_")){
+                        let name=(&name[2..]).to_string();
                         let wave=doc!(
                             "name":name,
                             "wave":w[i..end].into_iter().collect::<String>()
                         );
                         yours.push(bson::Bson::Document(wave));
-                    }else if(name.starts_with("ref_")){
-                        let name=(&name[4..]).to_string();
+                    }else if(name.starts_with("r_")){
+                        let name=(&name[2..]).to_string();
                         let wave=doc!(
                             "name":name,
                             "wave":w[i..end].into_iter().collect::<String>()
                         );
                         reference.push(bson::Bson::Document(wave));
+                    }else if(name.starts_with("i_")){
+                        let name=(&name[2..]).to_string();
+                        let wave=doc!(
+                            "name":name,
+                            "wave":w[i..end].into_iter().collect::<String>()
+                        );
+                        input.push(bson::Bson::Document(wave));
                     }else if(name=="mismatch"){
                         let wave=doc!(
                             "name":name,
@@ -268,22 +278,29 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                     for iter in words_iter{
                         data=data+" "+iter;
                     }
-                    if(name.starts_with("yours_")){
-                        let name=(&name[6..]).to_string();
+                    if(name.starts_with("y_")){
+                        let name=(&name[2..]).to_string();
                         let wave=doc!(
                             "name":name,
                             "wave":w[i..end].into_iter().collect::<String>(),
                             "data":data
                         );
                         yours.push(bson::Bson::Document(wave));
-                    }else if(name.starts_with("ref_")){
-                        let name=(&name[4..]).to_string();
+                    }else if(name.starts_with("r_")){
+                        let name=(&name[2..]).to_string();
                         let wave=doc!(
                             "name":name,
                             "wave":w[i..end].into_iter().collect::<String>(),
                             "data":data
                         );
                         reference.push(bson::Bson::Document(wave));
+                    }else if(name.starts_with("i_")){
+                        let wave=doc!(
+                            "name":name,
+                            "wave":w[i..end].into_iter().collect::<String>(),
+                            "data":data
+                        );
+                        input.push(bson::Bson::Document(wave));
                     }else if(name=="mismatch"){
                         let wave=doc!(
                             "name":name,
@@ -306,6 +323,11 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     
     if(debug.len()>1){
         signal.push(bson::Bson::Array(debug));
+        signal.push(bson::Bson::Document(doc!{}));
+    }
+    
+    if(input.len()>1){
+        signal.push(bson::Bson::Array(input));
         signal.push(bson::Bson::Document(doc!{}));
     }
     

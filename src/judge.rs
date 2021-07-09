@@ -102,6 +102,7 @@ fn judge_test_point(test_point:&str,job_dir:&str,id:u32)->Option<Document>{
     test.arg(test_point);
     test.arg("-o");
     test.arg(format!("{}/a.out",&job_dir));
+    
     //todo:pass compile error message
     let std_err=test.output().unwrap().stderr;
     let std_err=String::from_utf8(std_err).unwrap();

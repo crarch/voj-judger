@@ -16,10 +16,24 @@ pub fn judge(job_id:&str,testbench_id:u32)->Result<Document,()>{
     let job_dir=get_env("JUDGER_HOME")
         +"/jobs/"
         +job_id;
+        
+    //check lock
+    let lock_path=format!("{}/lock",&job_dir);
     
-    //rm a.out
-    let mut rm=Command::new("rm");
-    rm.arg(format!("{}/a.out",&job_dir));
+    if(Path::new(&lock_path).exists()){
+        let result=doc!{
+            "_id":job_id.to_string(),
+            "success":false,
+            "test_bench":"System Error",
+        };
+        return Ok(result);
+    }
+        
+    
+    
+    //place lock
+    let mut rm=Command::new("touch");
+    rm.arg(lock_path);
     rm.output().unwrap();
     
     

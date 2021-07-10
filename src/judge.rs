@@ -25,6 +25,7 @@ pub fn judge(job_id:&str,testbench_id:u32,user_id:u32)->Result<Document,()>{
             "_id":job_id.to_string(),
             "success":false,
             "user_id":user_id,
+            "question_id":testbench_id,
             "system_error":"System Error",
         };
         return Ok(result);
@@ -98,6 +99,7 @@ pub fn judge(job_id:&str,testbench_id:u32,user_id:u32)->Result<Document,()>{
         "_id":job_id.to_string(),
         "success":success,
         "user_id":user_id,
+        "question_id":testbench_id,
         "test_bench":test_benches,
     };
     

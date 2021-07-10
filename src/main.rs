@@ -21,7 +21,7 @@ fn main(){
     let sleep_time=time::Duration::from_millis(1000);
     loop{
         if let Some((job_id,question_id,user_id))=fetch_job(){
-            thread::spawn(move ||worker::start(job_id,question_id,user_id));
+            worker::start(job_id,question_id,user_id);
         }else{
             thread::sleep(sleep_time);
         }

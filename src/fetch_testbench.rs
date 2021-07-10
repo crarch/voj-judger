@@ -13,13 +13,15 @@ struct TestBench{
     test_bench:Document,
 }
 
-pub fn fetch_testbench_by_id(testbench_id:u32)->Result<(),()>{
+pub async fn fetch_testbench_by_id(testbench_id:u32)->Result<(),()>{
     let testbench_folder=get_env("JUDGER_HOME")+"/testbenches/"+&testbench_id.to_string();
     
     let url=get_env("API_URL")+"/testbench/"+&(testbench_id.to_string());
-    let resp = reqwest::blocking::get(url)
+    let resp = reqwest::get(url)
+        .await
         .unwrap()
         .json::<TestBench>()
+        .await
         .unwrap();
     
     //create new folder

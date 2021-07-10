@@ -6,10 +6,13 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-reqwest = { version = "0.11", features = ["json","blocking"] }
-tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.11", features = ["json"] }
+tokio = { version = "", features = ["full"] }
 serde=""
 serde_json=""
 serde_derive=""
 dotenv=""
 bson="2.0.0-beta.2"
+tracing=""
+tracing-log=""
+tracing-subscriber=""

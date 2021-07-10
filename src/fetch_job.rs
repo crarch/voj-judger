@@ -8,20 +8,20 @@ use crate::fetch_testbench::fetch_testbench_by_id;
 use std::process::Command;
 
 
-pub fn fetch_job()->Option<(String,u32,u32)>{
+pub async fn fetch_job()->Option<(String,u32,u32)>{
     let key=get_env("JUDGER_KEY");
     let id=get_env("JUDGER_ID");
     
     let url=get_env("API_URL")+"/queue";
-    let client=reqwest::blocking::Client::new();
+    let client=reqwest::Client::new();
     
     let job;
     
     if let Ok(response) = client.get(url)
         .header("Authorization",key)
         .header("JudgerID",id)
-        .send(){
-        if let Ok(body)=response.json::<Job>(){
+        .send().await{
+        if let Ok(body)=response.json::<Job>().await{
             job=body;
         }else{
         //empty queue
@@ -63,7 +63,6 @@ pub fn fetch_job()->Option<(String,u32,u32)>{
     mkdir.output().unwrap();    
     
     fs::write(&(job_dir+"/code"),code).unwrap();
-    println!("fetch {}",&job_id);
     return Some((job_id,question_id,user_id));
     
 }

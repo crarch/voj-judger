@@ -1,5 +1,7 @@
 #![allow(unused_assignments,dead_code,unused_must_use,unused_parens)]
 use std::{thread, time};
+use tokio::runtime::Runtime;
+use tokio::time::*;
 
 mod fetch_testbench;
 mod fetch_job;
@@ -17,11 +19,12 @@ pub use env::get_env;
 pub use return_result::return_result;
 pub use clean::clean_dir;
 
-fn main(){
+#[tokio::main]
+async fn main(){
     let sleep_time=time::Duration::from_millis(1000);
     loop{
-        if let Some((job_id,question_id,user_id))=fetch_job(){
-            thread::spawn(move ||worker::start(job_id,question_id,user_id));
+        if let Some((job_id,question_id,user_id))=fetch_job().await{
+            worker::start(job_id,question_id,user_id).await;
         }else{
             thread::sleep(sleep_time);
         }

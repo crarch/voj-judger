@@ -148,7 +148,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
         match wave{
             Wave::Single((w))=>{
                 loop{
-                    if w.len()<clock {
+                    if w.len()<=clock {
                         w.push('.');
                     }else{
                         break;
@@ -157,7 +157,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
             },
             Wave::Multi((w,_))=>{
                 loop{
-                    if w.len()<clock {
+                    if w.len()<=clock {
                         w.push('.');
                     }else{
                         break;

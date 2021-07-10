@@ -8,7 +8,7 @@ use crate::fetch_testbench::fetch_testbench_by_id;
 use std::process::Command;
 
 
-pub fn fetch_job()->Option<(String,u32)>{
+pub fn fetch_job()->Option<(String,u32,u32)>{
     let key=get_env("JUDGER_KEY");
     let id=get_env("JUDGER_ID");
     
@@ -35,6 +35,7 @@ pub fn fetch_job()->Option<(String,u32)>{
     let question_id=job.question_id;
     let update=job.update;
     let code=job.code;
+    let user_id=job.user_id;
     let job_id=job._id.to_hex();
     let testbench_folder=get_env("JUDGER_HOME")+"/testbenches/"+&question_id.to_string();
     
@@ -62,8 +63,8 @@ pub fn fetch_job()->Option<(String,u32)>{
     mkdir.output().unwrap();    
     
     fs::write(&(job_dir+"/code"),code).unwrap();
-    
-    return Some((job_id,question_id));
+    println!("fetch {}",&job_id);
+    return Some((job_id,question_id,user_id));
     
 }
 
@@ -75,5 +76,6 @@ struct Job{
     _id:ObjectId,
     question_id:u32,
     update:u32,
+    user_id:u32,
     code:String,
 }

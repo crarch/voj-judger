@@ -63,7 +63,6 @@ pub fn fetch_job()->Option<(String,u32,u32)>{
     mkdir.output().unwrap();    
     
     fs::write(&(job_dir+"/code"),code).unwrap();
-    println!("fetch {}",&job_id);
     return Some((job_id,question_id,user_id));
     
 }

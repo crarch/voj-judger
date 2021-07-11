@@ -1,7 +1,5 @@
 #![allow(unused_assignments,dead_code,unused_must_use,unused_parens)]
 use std::{thread, time};
-use tokio::runtime::Runtime;
-use tokio::time::*;
 
 mod fetch_testbench;
 mod fetch_job;

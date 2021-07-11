@@ -1,11 +1,10 @@
-use bson::Document;
 use serde::{Deserialize,Serialize};
-use std::fs::{self,File};
-use std::io::prelude::*;
+use std::fs;
 use std::time::UNIX_EPOCH;
 use crate::env::get_env;
 use crate::fetch_testbench::fetch_testbench_by_id;
 use std::process::Command;
+use bson::oid::ObjectId;
 
 
 pub async fn fetch_job()->Option<(String,u32,u32)>{
@@ -67,8 +66,6 @@ pub async fn fetch_job()->Option<(String,u32,u32)>{
     
 }
 
-use crate::judge::judge;
-use bson::oid::ObjectId;
 
 #[derive(Debug,Serialize,Deserialize)]
 struct Job{

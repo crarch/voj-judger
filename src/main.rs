@@ -25,16 +25,13 @@ fn main(){
     
     loop{
         if let Some((job_id,question_id,user_id))=fetch_job(){
+            println!("judging {}",&job_id);
             pool.execute(move||{
                 worker::start(job_id,question_id,user_id);
             });
         }else{
             thread::sleep(sleep_time);
         }
-        // pool.execute(move||{
-        //     println!("hi");
-        //     thread::sleep(sleep_time.clone());
-        // })
     }
 }
 

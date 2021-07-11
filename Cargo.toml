@@ -7,9 +7,10 @@ edition = "2018"
 
 [dependencies]
 reqwest = { version = "0.11", features = ["json"] }
-tokio = { version = "", features = ["full"] }
+tokio = { version = "^1", features = ["full"] }
 serde=""
 serde_json=""
 serde_derive=""
 dotenv=""
 bson="2.0.0-beta.2"
+futures=""

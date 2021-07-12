@@ -2,6 +2,7 @@ use crate::env::get_env;
 use std::path::Path;
 
 use bson::Document;
+use bson::oid::ObjectId;
 use bson::doc;
 
 use crate::clean_dir;
@@ -96,7 +97,7 @@ pub fn judge(job_id:&str,testbench_id:u32,user_id:u32)->Result<Document,()>{
     }
     
     let result=doc!{
-        "_id":job_id.to_string(),
+        "_id":ObjectId::parse_str(job_id.to_string()).unwrap(),
         "success":success,
         "user_id":user_id,
         "question_id":testbench_id,

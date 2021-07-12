@@ -18,19 +18,17 @@ pub use clean::clean_dir;
 
 use tokio::task;
 use tokio;
-
-
-// use voj_judger::ThreadPool;
+use tokio::time::Duration;
 
 #[tokio::main]
 async fn main(){
     
     loop{
         if let Some((job_id,question_id,user_id))=fetch_job().await{
-                println!("judging {}",&job_id);
-                task::spawn(async move{worker::start(job_id,question_id,user_id).await});
+            println!("judging {}",&job_id);
+            task::spawn(async move{worker::start(job_id,question_id,user_id).await});
         }else{
-            // tokio::time::delay_for(Duration::from_secs(1)).await;
+            tokio::time::sleep(Duration::from_millis(1000)).await;
         }
     }
 }

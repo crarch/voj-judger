@@ -21,7 +21,10 @@ pub use clean::clean_dir;
 fn main(){
     let sleep_time=time::Duration::from_millis(1000);
     
-    let pool=thread_pool::ThreadPool::new(8);
+    let workers=get_env("WORKERS").parse::<usize>().unwrap();
+    
+    let pool=thread_pool::ThreadPool::new(workers);
+    
     
     loop{
         if let Some((job_id,question_id,user_id))=fetch_job(){

@@ -43,30 +43,8 @@ async fn main(){
         if let Ok(mut client)=client.async_connect().await{
 
             println!("WebSocket Connection Established");
+            worker::start(client).await;
             
-            while let Some(Ok(message))=client.next().await{
-                match message.opcode(){
-                    Opcode::Text=>{
-                        let data=message.as_text().unwrap();
-
-                        if let Some((job_id,question_id,user_id))=parse_job(data).await{
-                            println!("judging {}",&job_id);
-                            let result=judge(&job_id,question_id,user_id).await.unwrap();
-                            let result:Value=Bson::from(result).into();
-                            let result=result.to_string();
-                            client.send(Message::text(result)).await.unwrap(); 
-                        }
-
-                    },
-
-                    Opcode::Ping => client.send(Message::pong(message.into_data())).await.unwrap(),
-                    
-                    Opcode::Pong => client.send(Message::ping(message.into_data())).await.unwrap(),
-
-                    _=>(),
-
-                }
-            }
         }else{
             continue;
         }

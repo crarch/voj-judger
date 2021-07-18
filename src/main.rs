@@ -19,12 +19,12 @@ pub use clean::clean_dir;
 
 use tokio;
 
-use websocket_lite::{ClientBuilder,Message,Opcode};
-use futures::stream::StreamExt;
-use futures::SinkExt;
+use websocket_lite::{ClientBuilder};
 
-use bson::Bson;
-use serde_json::Value;
+
+
+
+
 
 #[tokio::main]
 async fn main(){
@@ -40,7 +40,7 @@ async fn main(){
             
         client.add_header("Authorization".to_string(),judger_key.clone());
         
-        if let Ok(mut client)=client.async_connect().await{
+        if let Ok(client)=client.async_connect().await{
 
             println!("WebSocket Connection Established");
             worker::start(client).await;

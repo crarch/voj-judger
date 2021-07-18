@@ -1,6 +1,6 @@
-use tokio;
 
-use websocket_lite::{ClientBuilder,Message,Opcode};
+
+use websocket_lite::{Message,Opcode};
 use futures::stream::StreamExt;
 use futures::SinkExt;
 

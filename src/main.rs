@@ -60,6 +60,8 @@ async fn main(){
                     },
 
                     Opcode::Ping => client.send(Message::pong(message.into_data())).await.unwrap(),
+                    
+                    Opcode::Pong => client.send(Message::ping(message.into_data())).await.unwrap(),
 
                     _=>(),
 

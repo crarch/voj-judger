@@ -18,23 +18,31 @@ pub use env::get_env;
 pub use return_result::return_result;
 pub use clean::clean_dir;
 
+use websocket_lite::{ClientBuilder,Message,Opcode,Result};
+
 fn main(){
-    let sleep_time=time::Duration::from_millis(1000);
     
     let workers=get_env("WORKERS").parse::<usize>().unwrap();
     
     let pool=thread_pool::ThreadPool::new(workers);
     
+    let ws_url="ws".to_string()+&get_env("API_URL")[4..]+"/websocket";
     
-    loop{
-        if let Some((job_id,question_id,user_id))=fetch_job(){
-            println!("judging {}",&job_id);
-            pool.execute(move||{
-                worker::start(job_id,question_id,user_id);
-            });
-        }else{
-            thread::sleep(sleep_time);
+    let mut client=ClientBuilder::new(&ws_url).unwrap().connect().unwrap();
+    
+    
+    while let Ok(Some(_))=client.receive(){
+        loop{
+            if let Some((job_id,question_id,user_id))=fetch_job(){
+                println!("judging {}",&job_id);
+                pool.execute(move||{
+                    worker::start(job_id,question_id,user_id);
+                });
+            }else{
+                break;
+            }
         }
     }
+    
 }
 

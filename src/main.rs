@@ -23,6 +23,9 @@ use websocket_lite::{ClientBuilder,Message,Opcode};
 use futures::stream::StreamExt;
 use futures::SinkExt;
 
+use bson::Bson;
+use serde_json::Value;
+
 #[tokio::main]
 async fn main(){
     
@@ -45,6 +48,9 @@ async fn main(){
                 if let Some((job_id,question_id,user_id))=parse_job(data).await{
                     println!("judging {}",&job_id);
                     let result=judge(&job_id,question_id,user_id).await.unwrap();
+                    let result:Value=Bson::from(result).into();
+                    let result=result.to_string();
+                    client.send(Message::text(result)).await.unwrap(); 
                 }
 
             },

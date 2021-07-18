@@ -29,13 +29,18 @@ use serde_json::Value;
 #[tokio::main]
 async fn main(){
     
+    let judger_key=get_env("JUDGER_KEY");
+    
     let _workers=get_env("WORKERS").parse::<usize>().unwrap();
 
     let ws_url="ws".to_string()+&get_env("API_URL")[4..]+"/websocket";
 
     let mut client=ClientBuilder::new(&ws_url)
-        .unwrap()
-        .async_connect()
+        .unwrap();
+        
+    client.add_header("Authorization".to_string(),judger_key);
+    
+    let mut client=client.async_connect()
         .await
         .unwrap();
 

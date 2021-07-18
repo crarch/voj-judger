@@ -1,5 +1,5 @@
 #![allow(unused_assignments,dead_code,unused_must_use,unused_parens)]
-use std::{thread, time};
+
 
 mod fetch_testbench;
 mod parse_job;
@@ -19,7 +19,7 @@ pub use return_result::return_result;
 pub use clean::clean_dir;
 
 
-use websocket_lite::{ClientBuilder,Message,Opcode,Result};
+use websocket_lite::{ClientBuilder,Message,Opcode};
 
 fn main(){
 

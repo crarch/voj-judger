@@ -7,30 +7,8 @@ use std::process::Command;
 use bson::oid::ObjectId;
 
 
-pub async fn fetch_job()->Option<(String,u32,u32)>{
-    let key=get_env("JUDGER_KEY");
-    let id=get_env("JUDGER_ID");
-    
-    let url=get_env("API_URL")+"/queue";
-    let client=reqwest::Client::new();
-    
-    let job;
-    
-    if let Ok(response) = client.get(url)
-        .header("Authorization",key)
-        .header("JudgerID",id)
-        .send().await{
-        if let Ok(body)=response.json::<Job>().await{
-            job=body;
-        }else{
-        //empty queue
-        return None;
-        }
-    }else{
-        return None;
-    }
-        
-    
+pub async fn parse_job(data:&str)->Option<(String,u32,u32)>{
+    let job:Job=serde_json::from_str(data).unwrap();
     let question_id=job.question_id;
     let update=job.update;
     let code=job.code;

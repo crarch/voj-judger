@@ -8,7 +8,7 @@ use bson::doc;
 use crate::clean_dir;
 use crate::parse::parse;
 
-pub fn judge(job_id:&str,testbench_id:u32,user_id:u32)->Result<Document,()>{
+pub async fn judge(job_id:&str,testbench_id:u32,user_id:u32)->Result<Document,()>{
     //todo:Result<(),()>
     let test_bench_dir=get_env("JUDGER_HOME")
         +"/testbenches/"
@@ -76,7 +76,7 @@ pub fn judge(job_id:&str,testbench_id:u32,user_id:u32)->Result<Document,()>{
             .into_string()
             .unwrap();
             
-        match judge_test_point(&test_point,&job_dir,id){
+        match judge_test_point(&test_point,&job_dir,id).await{
             None=>{
                 test_benches.insert(id.to_string(),"");
             },
@@ -112,7 +112,7 @@ pub fn judge(job_id:&str,testbench_id:u32,user_id:u32)->Result<Document,()>{
 use std::process::Command;
 
 
-fn judge_test_point(test_point:&str,job_dir:&str,id:u32)->Option<Document>{
+async fn judge_test_point(test_point:&str,job_dir:&str,id:u32)->Option<Document>{
     //todo:Result<(),()>
     
     //cmd:iverilog code tb

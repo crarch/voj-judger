@@ -2,7 +2,7 @@
 use std::{thread, time};
 
 mod fetch_testbench;
-mod fetch_job;
+mod parse_job;
 mod timestamp;
 mod env;
 mod judge;
@@ -12,7 +12,7 @@ mod return_result;
 mod clean;
 mod thread_pool;
 
-pub use fetch_job::fetch_job;
+pub use parse_job::parse_job;
 pub use judge::judge; 
 pub use env::get_env;
 pub use return_result::return_result;
@@ -37,7 +37,7 @@ fn main(){
             Opcode::Text=>{
                 let data=message.as_text().unwrap();
 
-                if let Some((job_id,question_id,user_id))=fetch_job(data){
+                if let Some((job_id,question_id,user_id))=parse_job(data){
                     println!("judging {}",&job_id);
                     pool.execute(move||{
                         worker::start(job_id,question_id,user_id);

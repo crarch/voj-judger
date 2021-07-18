@@ -10,7 +10,7 @@ use std::process::Command;
 
 
 
-pub fn fetch_job(data:&str)->Option<(String,u32,u32)>{
+pub fn parse_job(data:&str)->Option<(String,u32,u32)>{
     let job:Job=serde_json::from_str(data).unwrap();
     let question_id=job.question_id;
     let update=job.update;

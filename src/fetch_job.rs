@@ -1,4 +1,5 @@
 use bson::Document;
+use bson::Bson;
 use serde::{Deserialize,Serialize};
 use std::fs::{self,File};
 use std::io::prelude::*;
@@ -8,30 +9,9 @@ use crate::fetch_testbench::fetch_testbench_by_id;
 use std::process::Command;
 
 
-pub fn fetch_job()->Option<(String,u32,u32)>{
-    let key=get_env("JUDGER_KEY");
-    let id=get_env("JUDGER_ID");
-    
-    let url=get_env("API_URL")+"/queue";
-    let client=reqwest::blocking::Client::new();
-    
-    let job;
-    
-    if let Ok(response) = client.get(url)
-        .header("Authorization",key)
-        .header("JudgerID",id)
-        .send(){
-        if let Ok(body)=response.json::<Job>(){
-            job=body;
-        }else{
-        //empty queue
-        return None;
-        }
-    }else{
-        return None;
-    }
-        
-    
+
+pub fn fetch_job(data:&str)->Option<(String,u32,u32)>{
+    let job:Job=serde_json::from_str(data).unwrap();
     let question_id=job.question_id;
     let update=job.update;
     let code=job.code;
@@ -73,8 +53,11 @@ use bson::oid::ObjectId;
 #[derive(Debug,Serialize,Deserialize)]
 struct Job{
     _id:ObjectId,
-    question_id:u32,
     update:u32,
+    question_id:u32,
     user_id:u32,
     code:String,
+    lock_time:u32,
 }
+
+    

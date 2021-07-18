@@ -16,9 +16,9 @@ pub use env::get_env;
 pub use return_result::return_result;
 pub use clean::clean_dir;
 
-use tokio::task;
+
 use tokio;
-use tokio::time::Duration;
+
 use websocket_lite::{ClientBuilder,Message,Opcode};
 use futures::stream::StreamExt;
 use futures::SinkExt;
@@ -29,7 +29,7 @@ use serde_json::Value;
 #[tokio::main]
 async fn main(){
     
-    let workers=get_env("WORKERS").parse::<usize>().unwrap();
+    let _workers=get_env("WORKERS").parse::<usize>().unwrap();
 
     let ws_url="ws".to_string()+&get_env("API_URL")[4..]+"/websocket";
 

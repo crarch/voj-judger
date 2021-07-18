@@ -56,6 +56,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9c59e7af012c713f529e7a3ee57ce9b31ddd858d4b512923602f74608b009631"
 
 [[package]]
+name = "byteorder"
+version = "1.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
+
+[[package]]
 name = "bytes"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -900,6 +906,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "sha1"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2579985fda508104f7587689507983eadd6a6e84dd35d6d115361f530916fa0d"
+
+[[package]]
 name = "signal-hook-registry"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1133,6 +1145,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "tokio",
+ "websocket-lite",
 ]
 
 [[package]]
@@ -1233,6 +1246,39 @@ checksum = "e828417b379f3df7111d3a2a9e5753706cae29c41f7c4029ee9fd77f3e09e582"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "websocket-codec"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "efd4bc7bc1d9a695c02fbcee0bea470ee0e6b87dc6d1018e9f09d06dad44b740"
+dependencies = [
+ "base64",
+ "byteorder",
+ "bytes",
+ "httparse",
+ "rand 0.7.3",
+ "sha1",
+ "tokio-util",
+]
+
+[[package]]
+name = "websocket-lite"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3e364429c66dfd2b8d75227b6942e4f0a38102b53eb854ee32aac67bc1866e82"
+dependencies = [
+ "base64",
+ "bytes",
+ "futures",
+ "native-tls",
+ "rand 0.7.3",
+ "tokio",
+ "tokio-native-tls",
+ "tokio-util",
+ "url",
+ "websocket-codec",
 ]
 
 [[package]]

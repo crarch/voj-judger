@@ -8,9 +8,11 @@ use futures_util::stream::SplitSink;
 use crate::get_env;
 
 use super::JudgeJob;
-
+use tokio_tungstenite::MaybeTlsStream;
+use tokio_tungstenite::WebSocketStream;
+use futures_util::SinkExt;
 pub struct WsClient {
-    // pub framed:actix::io::FramedWrite<Message, WriteHalf<Framed<Box<dyn AsyncNetworkStream + Sync + Unpin + std::marker::Send>, Message>>, MessageCodec>, 
+    pub framed:SplitSink<WebSocketStream<MaybeTlsStream<tokio::net::TcpStream>>, tokio_tungstenite::tungstenite::Message>,
 }
     
 struct Ping;
@@ -19,7 +21,7 @@ impl Actor for WsClient {
     type Context = Context<Self>;
 
     fn started(&mut self, ctx: &mut Context<Self>) {
-        
+        self.framed.send(Message::Text("hihi".to_string()));
             
     }
 
@@ -38,12 +40,17 @@ impl StreamHandler<Result<tokio_tungstenite::tungstenite::Message, tokio_tungste
         message:Result<tokio_tungstenite::tungstenite::Message, tokio_tungstenite::tungstenite::Error>, 
         ctx: &mut Context<Self>,
     ) {
-        // match message.opcode(){
-        //     // Opcode::Ping=>self.framed.send(Message::pong(message.into_data())).unwrap(),
-        //     // Opcode::Pong=>self.framed.send(Message::ping(message.into_data())).unwrap(),
-        //     _=>(),
-        // }
-        println!("ok");
+        if let Ok(message)=message{
+            println!("ok");
+            // match message{
+            // 
+            // 
+            // 
+            // }
+        }
 
+        // println!("{:?}",message);
     }
 }
+
+

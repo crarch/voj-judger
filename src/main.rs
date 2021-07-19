@@ -47,11 +47,15 @@ async fn main(){
 
     let (mut ws_stream,_)=connect_async(request).await.unwrap();
     
-    let (tx,rx)=ws_stream.split();
+    let (mut tx,rx)=ws_stream.split();
+    
+    // tx.send(Message::Text("hihi".to_string())).await;
     
     let addr=WsClient::create(|ctx|{
-        WsClient::add_stream(rx,ctx);
-        WsClient{}
+        WsClient::add_stream(FramedRead::new(rx,codec::ClientCodec),ctx);
+        WsClient{
+            framed:tx
+        }
     });
     
     loop{}
@@ -60,4 +64,8 @@ async fn main(){
 use httparse::Request;
 use url::Url;
 
-    
+use futures_util::SinkExt;
+use tokio_tungstenite::tungstenite::Error;
+use tokio_tungstenite::tungstenite::Message;
+use tokio_util::codec::FramedRead;
+mod codec;

@@ -18,9 +18,9 @@ pub async fn start(mut client:AsyncClient<Box<dyn AsyncNetworkStream + Sync + Se
             Opcode::Text=>{
                 let data=message.as_text().unwrap();
 
-                if let Some((job_id,question_id,user_id))=parse_job(data).await{
+                if let Some((job_id,code,question_id,user_id,submit_time))=parse_job(data).await{
                     println!("judging {}",&job_id);
-                    let result=judge(&job_id,question_id,user_id).await.unwrap();
+                    let result=judge(job_id,code,question_id,user_id,submit_time).await.unwrap();
                     let result:Value=Bson::from(result).into();
                     let result=result.to_string();
                     client.send(Message::text(result)).await.unwrap(); 

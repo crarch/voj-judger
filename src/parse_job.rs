@@ -7,13 +7,14 @@ use std::process::Command;
 use bson::oid::ObjectId;
 
 
-pub async fn parse_job(data:&str)->Option<(String,u32,u32)>{
+pub async fn parse_job(data:&str)->Option<(String,String,u32,u32,u32)>{
     let job:Job=serde_json::from_str(data).unwrap();
     let question_id=job.question_id;
     let update=job.update;
     let code=job.code;
     let user_id=job.user_id;
     let job_id=job._id.to_hex();
+    let submit_time=job.submit_time;
     let testbench_folder=get_env("JUDGER_HOME")+"/testbenches/"+&question_id.to_string();
     
     let job_dir=get_env("JUDGER_HOME")+"/jobs/"+&job_id;
@@ -39,8 +40,8 @@ pub async fn parse_job(data:&str)->Option<(String,u32,u32)>{
     mkdir.arg(&job_dir);
     mkdir.output().unwrap();    
     
-    fs::write(&(job_dir+"/code"),code).unwrap();
-    return Some((job_id,question_id,user_id));
+    fs::write(&(job_dir+"/code"),&code).unwrap();
+    return Some((job_id,code,question_id,user_id,submit_time));
     
 }
 
@@ -52,4 +53,5 @@ struct Job{
     update:u32,
     user_id:u32,
     code:String,
+    submit_time:u32,
 }

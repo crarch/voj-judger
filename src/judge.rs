@@ -8,7 +8,7 @@ use bson::doc;
 use crate::clean_dir;
 use crate::parse::parse;
 
-pub async fn judge(job_id:&str,testbench_id:u32,user_id:u32)->Result<Document,()>{
+pub async fn judge(job_id:String,code:String,testbench_id:u32,user_id:u32,submit_time:u32)->Result<Document,()>{
     //todo:Result<(),()>
     let test_bench_dir=get_env("JUDGER_HOME")
         +"/testbenches/"
@@ -16,17 +16,19 @@ pub async fn judge(job_id:&str,testbench_id:u32,user_id:u32)->Result<Document,()
     
     let job_dir=get_env("JUDGER_HOME")
         +"/jobs/"
-        +job_id;
+        +&job_id;
         
     //check lock
     let lock_path=format!("{}/lock",&job_dir);
     
     if(Path::new(&lock_path).exists()){
         let result=doc!{
-            "_id":job_id.to_string(),
+            "_id":ObjectId::parse_str(job_id).unwrap(),
             "success":false,
             "user_id":user_id,
             "question_id":testbench_id,
+            "code":code,
+            "submit_time":submit_time,
             "system_error":"System Error",
         };
         return Ok(result);
@@ -97,10 +99,12 @@ pub async fn judge(job_id:&str,testbench_id:u32,user_id:u32)->Result<Document,()
     }
     
     let result=doc!{
-        "_id":ObjectId::parse_str(job_id.to_string()).unwrap(),
+        "_id":ObjectId::parse_str(job_id).unwrap(),
         "success":success,
         "user_id":user_id,
+        "code":code,
         "question_id":testbench_id,
+        "submit_time":submit_time,
         "test_bench":test_benches,
     };
     

@@ -19,8 +19,6 @@ pub use return_result::return_result;
 pub use clean::clean_dir;
 
 fn main(){
-    let system=actix::System::new();
     
-    system.run();
 }
 

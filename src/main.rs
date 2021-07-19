@@ -23,7 +23,7 @@ use websocket_lite::{ClientBuilder};
 
 
 
-
+use tokio::time::{sleep, Duration};
 
 
 #[tokio::main]
@@ -44,10 +44,11 @@ async fn main(){
 
             println!("WebSocket Connection Established");
             worker::start(client).await;
+            println!("WebSocket Connection Lost");
             
-        }else{
-            continue;
         }
+        
+        sleep(Duration::from_millis(1000)).await;        
         
     }
 }

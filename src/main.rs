@@ -52,7 +52,7 @@ async fn main(){
     // tx.send(Message::Text("hihi".to_string())).await;
     
     let addr=WsClient::create(|ctx|{
-        WsClient::add_stream(FramedRead::new(rx,codec::ClientCodec),ctx);
+        // WsClient::add_stream(FramedRead::new(rx,codec::ClientCodec),ctx);
         WsClient{
             framed:tx
         }

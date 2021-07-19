@@ -2,7 +2,7 @@ use actix::{Actor};
 use uuid::Uuid;
 use actix::prelude::{Context,Handler,Recipient};
 
-use super::{Connect,JudgeJob,JudgeResult};
+use super::{Connect,JudgeJob};
 
 type Socket=Recipient<JudgeJob>;
 

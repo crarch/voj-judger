@@ -1,7 +1,7 @@
 use super::JudgeJob;
-use super::JudgeResult;
+
 use super::Master;
-use super::Connect;
+
 use actix::prelude::*;
 use uuid::Uuid;
 
@@ -31,7 +31,7 @@ impl Worker{
     
     fn judge(
         &self,
-        job:JudgeJob,
+        _job:JudgeJob,
         _ctx:&mut Context<Self>
     ){
         ()
@@ -44,7 +44,7 @@ impl Worker{
 impl Handler<JudgeJob> for Worker{
     type Result=();
     
-    fn handle(&mut self,job:JudgeJob,_ctx:&mut Self::Context){
+    fn handle(&mut self,_job:JudgeJob,_ctx:&mut Self::Context){
         ()
     }
     

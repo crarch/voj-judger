@@ -2,10 +2,8 @@ use actix::prelude::*;
 use std::str::FromStr;
 use std::time::Duration;
 use std::{io, net, thread};
-
 use tokio::io::WriteHalf;
 use futures_util::stream::SplitSink;
-use tokio_util::codec::Framed;
 
 use crate::get_env;
 
@@ -30,21 +28,22 @@ impl Actor for WsClient {
 }
         
 use futures_util::StreamExt;
+use tokio_tungstenite::tungstenite::Message;
+use tokio_tungstenite::tungstenite::Error;
 
-/// Server communication
 
-// impl StreamHandler<> for WsClient {
-//     fn handle(
-//         &mut self,
-//         message: 
-//         ctx: &mut Context<Self>,
-//     ) {
-//         // match message.opcode(){
-//         //     // Opcode::Ping=>self.framed.send(Message::pong(message.into_data())).unwrap(),
-//         //     // Opcode::Pong=>self.framed.send(Message::ping(message.into_data())).unwrap(),
-//         //     _=>(),
-//         // }
-//         println!("ok");
-// 
-//     }
-// }
+impl StreamHandler<Result<tokio_tungstenite::tungstenite::Message, tokio_tungstenite::tungstenite::Error>> for WsClient {
+    fn handle(
+        &mut self,
+        message:Result<tokio_tungstenite::tungstenite::Message, tokio_tungstenite::tungstenite::Error>, 
+        ctx: &mut Context<Self>,
+    ) {
+        // match message.opcode(){
+        //     // Opcode::Ping=>self.framed.send(Message::pong(message.into_data())).unwrap(),
+        //     // Opcode::Pong=>self.framed.send(Message::ping(message.into_data())).unwrap(),
+        //     _=>(),
+        // }
+        println!("ok");
+
+    }
+}

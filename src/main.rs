@@ -16,6 +16,9 @@ fn main(){
         let a=Arbiter::new();
     
         let exec=async move{
+            Worker::new(addr.clone()).start();
+            Worker::new(addr.clone()).start();
+            Worker::new(addr.clone()).start();
             Worker::new(addr).start();
         };
     

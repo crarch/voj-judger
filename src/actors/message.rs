@@ -15,7 +15,7 @@ pub struct JudgeJob(pub Job);
 
 #[derive(Message)]
 #[rtype(result="()")]
-pub struct JudgeResult(pub String);
+pub struct JudgeResult(pub JobResult);
 
 #[derive(Message)]
 #[rtype(result="()")]
@@ -40,4 +40,16 @@ pub struct Job{
 }
 
 use bson::oid::ObjectId;
+use bson::document::Document;
 use serde::{Deserialize,Serialize};
+
+#[derive(Debug,Serialize,Deserialize)]
+pub struct JobResult{
+    _id:ObjectId,
+    success:bool,
+    user_id:u32,
+    code:String,
+    question_id:u32,
+    submit_time:u32,
+    test_bench:Document,
+}

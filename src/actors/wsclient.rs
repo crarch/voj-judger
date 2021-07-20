@@ -4,17 +4,11 @@ use super::WsDisconnect;
 use super::message::*;
 
 pub struct WsClient{
-    pub framed:Option<SinkWrite<Message, SplitSink<Framed<BoxedSocket, Codec>, Message>>>,
+    pub framed:SinkWrite<Message, SplitSink<Framed<BoxedSocket, Codec>, Message>>,
     pub master_addr:Addr<Master>
 }
     
 impl WsClient{
-    // pub fn new()->WsClient{
-    //     WsClient{
-    //         framed:None
-    //     }
-    // 
-    // }
 }
     
         
@@ -24,6 +18,18 @@ impl Actor for WsClient {
 
     fn started(&mut self, ctx: &mut Context<Self>) {
         self.master_addr.do_send(WsConnect(ctx.address()));
+    }
+    
+}
+
+impl Handler<JudgeResult> for WsClient{
+    type Result=();
+    
+    fn handle(&mut self,result:JudgeResult,_ctx:&mut Self::Context){
+        let JudgeResult(result)=result;
+        let result=serde_json::to_string(&result).unwrap();
+        let result=bytestring::ByteString::from(result);
+        self.framed.write(Message::Text(result));
     }
     
 }
@@ -37,15 +43,12 @@ impl StreamHandler<Result<Frame, WsProtocolError>> for WsClient {
             
             match(msg){
                 Frame::Ping(text)=>{
-                    if let Some(ref mut framed)=self.framed{
-                        let result=framed.write(Message::Ping(text));
-                    }
+                    self.framed.write(Message::Ping(text));
                 },
                 Frame::Pong(text)=>{
                 },
                 
                 Frame::Text(job)=>{
-                    // self.master_addr.do_send(JudgeJob(String::from(job.split())));
                     let job:Job=serde_json::from_slice(&job).unwrap();
                     self.master_addr.do_send(JudgeJob(job));
                 },

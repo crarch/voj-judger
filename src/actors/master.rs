@@ -78,10 +78,10 @@ impl Handler<Connect> for Master{
 
 impl Master{
     fn send_job(&mut self,job:JudgeJob){
-        if self.workers_count==0 {
+        if(self.workers_count==0){
             ()
         }else{
-            if self.iter==self.workers_count {
+            if(self.iter==self.workers_count){
                 self.iter=0;
             }
             
@@ -118,7 +118,7 @@ impl Handler<WsConnect> for Master{
     fn handle(
         &mut self,
         addr:WsConnect,
-        _ctx:&mut Context<Self>
+        ctx:&mut Context<Self>
     )->Self::Result{
         
         let WsConnect(addr)=addr;
@@ -142,7 +142,7 @@ impl Handler<SpawnWsClient> for Master{
             
             let ws_url="ws".to_string()+&get_env("API_URL")[4..]+"/websocket";
             
-            if let Ok((_response, framed)) = ClientBuilder::new()
+            if let Ok((response, framed)) = ClientBuilder::new()
                 .header("Authorization",key)
                 .max_http_version(awc::http::Version::HTTP_11)
                 .finish()
@@ -150,10 +150,10 @@ impl Handler<SpawnWsClient> for Master{
                 .connect()
                 .await{
                 let (sink, stream) = framed.split();
-                let _addr = WsClient::create(|ctx| {
+                let addr = WsClient::create(|ctx| {
                     WsClient::add_stream(stream, ctx);
                     WsClient{
-                        framed:Some(SinkWrite::new(sink, ctx)),
+                        framed:SinkWrite::new(sink, ctx),
                         master_addr:master_addr
                     }
                 });

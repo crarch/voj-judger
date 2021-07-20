@@ -1,27 +1,32 @@
 use super::JudgeJob;
 
 use super::Master;
+use super::message::*;
 
 use actix::prelude::*;
 use uuid::Uuid;
 
 pub struct Worker{
-    id:Uuid,
-    master_addr:Addr<Master>,
+    master_addr:Addr<Master>
 }
 
 impl Actor for Worker{
     type Context=Context<Self>;
     
+    fn started(&mut self, ctx: &mut Self::Context) {
+    
+    }
+    
+    fn stopping(&mut self, _: &mut Self::Context) -> Running {
+        Running::Stop
+    }
+    
 }
 
 impl Worker{
-    pub fn new(
-        master_addr:Addr<Master>,
-    )->Worker{
+    pub fn new(addr:Addr<Master>)->Worker{
         Worker{
-            id:Uuid::new_v4(),
-            master_addr:master_addr
+            master_addr:addr
         }
     }
 }
@@ -30,13 +35,10 @@ impl Worker{
 impl Worker{
     
     fn judge(
-        &self,
-        _job:JudgeJob,
-        _ctx:&mut Context<Self>
-    ){
-        // println!("{:?}",_job);
+        job:Job,
+    )->(){
+        
     }
-    
     
 }
 
@@ -44,8 +46,9 @@ impl Worker{
 impl Handler<JudgeJob> for Worker{
     type Result=();
     
-    fn handle(&mut self,_job:JudgeJob,_ctx:&mut Self::Context){
-        ()
+    fn handle(&mut self,job:JudgeJob,ctx:&mut Self::Context){
+        let JudgeJob(job)=job;
+        Worker::judge(job);
     }
     
 }

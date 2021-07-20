@@ -1,4 +1,3 @@
-
 use serde::{Deserialize,Serialize};
 use std::fs::{self};
 
@@ -9,37 +8,6 @@ use std::process::Command;
 
 
 pub fn fetch_job()->Option<(String,u32,u32)>{
-    let key=get_env("JUDGER_KEY");
-    let id=get_env("JUDGER_ID");
-    
-    let url=get_env("API_URL")+"/queue";
-    let client=reqwest::blocking::Client::new();
-    
-    let job;
-    
-    if let Ok(response) = client.get(url)
-        .header("Authorization",key)
-        .header("JudgerID",id)
-        .send(){
-        if let Ok(body)=response.json::<Job>(){
-            job=body;
-        }else{
-        //empty queue
-        return None;
-        }
-    }else{
-        return None;
-    }
-        
-    
-    let question_id=job.question_id;
-    let update=job.update;
-    let code=job.code;
-    let user_id=job.user_id;
-    let job_id=job._id.to_hex();
-    let testbench_folder=get_env("JUDGER_HOME")+"/testbenches/"+&question_id.to_string();
-    
-    let job_dir=get_env("JUDGER_HOME")+"/jobs/"+&job_id;
     
     let mut fetch=true;
     if let Ok(metadata)=fs::metadata(testbench_folder.clone()+"/0"){
@@ -57,12 +25,6 @@ pub fn fetch_job()->Option<(String,u32,u32)>{
     }
     
     //cmd:mkdir -p job_dir
-    let mut mkdir=Command::new("mkdir");
-    mkdir.arg("-p");
-    mkdir.arg(&job_dir);
-    mkdir.output().unwrap();    
-    
-    fs::write(&(job_dir+"/code"),code).unwrap();
     return Some((job_id,question_id,user_id));
     
 }

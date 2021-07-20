@@ -6,7 +6,6 @@ use actix::Addr;
 use super::message::*;
 use super::wsclient::*;
 
-type Socket=Recipient<JudgeJob>;
 
 use std::time::Duration;
 use std::thread;
@@ -16,12 +15,13 @@ use actix::AsyncContext;
 use awc::ClientBuilder;
 use actix::io::SinkWrite;
 use super::WsDisconnect;
+use super::Worker;
 use futures::StreamExt;
 
 use crate::env::get_env;
 
 pub struct Master{
-    workers:Vec<(Uuid,Socket)>,
+    workers:Vec<Addr<Worker>>,
     iter:usize,
     workers_count:usize,
     wsclient_addr:Option<Addr<WsClient>>
@@ -44,6 +44,12 @@ impl Actor for Master{
     
     fn started(&mut self, ctx: &mut Context<Self>) {
         ctx.address().do_send(SpawnWsClient);
+        
+        for _ in 0..114{//todo
+            self.workers.push(Worker::new(ctx.address()).start());
+            self.workers_count=self.workers_count+1;
+        }
+        
     }
 
 }
@@ -59,25 +65,11 @@ impl Handler<JudgeJob> for Master{
     }
 } 
 
-impl Handler<Connect> for Master{
-    type Result=();
-    
-    fn handle(
-        &mut self,
-        msg:Connect,
-        _ctx:&mut Context<Self>
-    )->Self::Result{
-        
-        self.workers.push(
-            (msg.self_id,msg.addr)
-        );
-        
-    }
-}
             
 
 impl Master{
     fn send_job(&mut self,job:JudgeJob){
+        
         if(self.workers_count==0){
             ()
         }else{
@@ -85,9 +77,9 @@ impl Master{
                 self.iter=0;
             }
             
-            let (_,socket_recipient)=&self.workers[self.iter];
+            let addr=&self.workers[self.iter];
             
-            let _=socket_recipient.do_send(job);
+            let _=addr.do_send(job);
             
             self.iter=self.iter+1;
             
@@ -120,6 +112,7 @@ impl Handler<WsConnect> for Master{
         addr:WsConnect,
         ctx:&mut Context<Self>
     )->Self::Result{
+        
         
         let WsConnect(addr)=addr;
         self.wsclient_addr=Some(addr);

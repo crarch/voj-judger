@@ -6,10 +6,37 @@ use bson::oid::ObjectId;
 use bson::Document;
 use bson::doc;
 
-use crate::clean_dir;
-use crate::parse::parse;
+use super::clean_dir;
+use super::parse;
+use crate::actors::Job;
+use crate::actors::JobResult;
+use std::fs::{self};
 
-pub fn judge(job_id:&str,testbench_id:u32,user_id:u32)->Result<Document,()>{
+pub fn judge(job:Job)->JobResult{
+    
+    
+    let job_id=job._id.to_hex();
+    
+    let question_id=job.question_id;
+    let update=job.update;
+    let user_id=job.user_id;
+    let code=job.code;
+    let submit_time=job.submit_time;
+    let testbench_id=question_id;
+    
+    let testbench_folder=get_env("JUDGER_HOME")+"/testbenches/"+&question_id.to_string();
+    
+    let job_dir=get_env("JUDGER_HOME")+"/jobs/"+&job_id;
+    
+    let mut mkdir=Command::new("mkdir");
+    mkdir.arg("-p");
+    mkdir.arg(&job_dir);
+    mkdir.output().unwrap();    
+
+    fs::write(&(job_dir+"/code"),&code).unwrap();
+
+    
+    
     //todo:Result<(),()>
     let test_bench_dir=get_env("JUDGER_HOME")
         +"/testbenches/"
@@ -17,16 +44,10 @@ pub fn judge(job_id:&str,testbench_id:u32,user_id:u32)->Result<Document,()>{
     
     let job_dir=get_env("JUDGER_HOME")
         +"/jobs/"
-        +job_id;
+        +&job_id;
         
     
-        
     
-    
-    //place lock
-    let mut rm=Command::new("touch");
-    rm.arg(lock_path);
-    rm.output().unwrap();
     
     
     //make vcd folder
@@ -85,17 +106,19 @@ pub fn judge(job_id:&str,testbench_id:u32,user_id:u32)->Result<Document,()>{
         
     }
     
-    let result=doc!{
-        "_id":ObjectId::parse_str(job_id.to_string()).unwrap(),
-        "success":success,
-        "user_id":user_id,
-        "question_id":testbench_id,
-        "test_bench":test_benches,
-    };
     
     clean_dir(&job_dir);
     
-    Ok(result)
+    JobResult{
+        _id:job._id,
+        success:success,
+        user_id:user_id,
+        question_id:question_id,
+        code:code,
+        submit_time:submit_time,
+        test_bench:test_benches,
+    }
+    
 }
 
 use std::process::Command;

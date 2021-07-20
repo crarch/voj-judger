@@ -4,7 +4,7 @@ use super::*;
 
 #[derive(Message)]
 #[rtype(result="()")]
-pub struct Connect{
+pub struct WorkerConnect{
     pub addr:Recipient<JudgeJob>,
     pub self_id:Uuid,
 }
@@ -31,12 +31,12 @@ pub struct SpawnWsClient;
 
 #[derive(Debug,Serialize,Deserialize)]
 pub struct Job{
-    _id:ObjectId,
-    question_id:u32,
-    update:u32,
-    user_id:u32,
-    code:String,
-    submit_time:u32,
+    pub _id:ObjectId,
+    pub question_id:u32,
+    pub update:u32,
+    pub user_id:u32,
+    pub code:String,
+    pub submit_time:u32,
 }
 
 use bson::oid::ObjectId;
@@ -45,11 +45,11 @@ use serde::{Deserialize,Serialize};
 
 #[derive(Debug,Serialize,Deserialize)]
 pub struct JobResult{
-    _id:ObjectId,
-    success:bool,
-    user_id:u32,
-    code:String,
-    question_id:u32,
-    submit_time:u32,
-    test_bench:Document,
+    pub _id:ObjectId,
+    pub success:bool,
+    pub user_id:u32,
+    pub code:String,
+    pub question_id:u32,
+    pub submit_time:u32,
+    pub test_bench:Document,
 }

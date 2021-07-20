@@ -35,13 +35,13 @@ impl StreamHandler<Result<Frame, WsProtocolError>> for WsClient {
         if let Ok(msg)=msg{
             
             
-            match(msg){
+            match msg{
                 Frame::Ping(text)=>{
                     if let Some(ref mut framed)=self.framed{
-                        let result=framed.write(Message::Ping(text));
+                        let _result=framed.write(Message::Ping(text));
                     }
                 },
-                Frame::Pong(text)=>{
+                Frame::Pong(_text)=>{
                     // if let Some(ref mut framed)=self.framed{
                     //     let result=framed.write(Message::Ping(text));
                     // }
@@ -73,19 +73,19 @@ impl StreamHandler<Result<Frame, WsProtocolError>> for WsClient {
 impl actix::io::WriteHandler<WsProtocolError> for WsClient {}
 
 use actix::StreamHandler;
-use std::time::Duration;
-use std::{io, thread};
+
+
 
 use actix::io::SinkWrite;
-use actix::*;
+
 use actix_codec::Framed;
 use awc::{
     error::WsProtocolError,
     ws::{Codec, Frame, Message},
-    BoxedSocket, Client,ClientBuilder
+    BoxedSocket
 };
-use bytes::Bytes;
-use futures::stream::{SplitSink, StreamExt};
+
+use futures::stream::{SplitSink};
 use bson::oid::ObjectId;
 use serde::{Deserialize,Serialize};
 

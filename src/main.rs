@@ -1,15 +1,11 @@
-use std::time::Duration;
-use std::{io, thread};
-use actix::io::SinkWrite;
+
+
+
 use actix::*;
-use actix_codec::Framed;
-use awc::{
-    error::WsProtocolError,
-    ws::{Codec, Frame, Message},
-    BoxedSocket, Client,ClientBuilder
-};
-use bytes::Bytes;
-use futures::stream::{SplitSink, StreamExt};
+
+
+
+
 
 mod env;
 
@@ -26,7 +22,7 @@ async fn main() {
     // 
     // });
     // 
-    let master=Master::new().start();
+    let _master=Master::new().start();
     // 
     // let worker=Worker::new(master).start();
 
@@ -37,6 +33,6 @@ async fn main() {
     
 
 }
-use actors::WsClient;
-use actors::Worker;
+
+
 use actors::Master;

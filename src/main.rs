@@ -1,38 +1,18 @@
-
-
-
-use actix::*;
-
-
-
-
+use std::time::Duration;
+use std::{io, thread};
+use actix::Actor;
 
 mod env;
-
 mod actors;
+use actors::WsClient;
+use actors::Worker;
+use actors::Master;
 
 #[actix::main]
 async fn main() {
 
-    // let addr = WsClient::create(|ctx| {
-    //     WsClient::add_stream(stream, ctx);
-    //     WsClient{
-    //         framed:Some(SinkWrite::new(sink, ctx))
-    //     }
-    // 
-    // });
-    // 
-    let _master=Master::new().start();
-    // 
-    // let worker=Worker::new(master).start();
-
-    // start console loop
+    let master=Master::new().start();
+    
     tokio::signal::ctrl_c().await.unwrap();
-    
-    
-    
 
 }
-
-
-use actors::Master;

@@ -35,22 +35,19 @@ impl StreamHandler<Result<Frame, WsProtocolError>> for WsClient {
         if let Ok(msg)=msg{
             
             
-            match msg{
+            match(msg){
                 Frame::Ping(text)=>{
                     if let Some(ref mut framed)=self.framed{
-                        let _result=framed.write(Message::Ping(text));
+                        let result=framed.write(Message::Ping(text));
                     }
                 },
-                Frame::Pong(_text)=>{
-                    // if let Some(ref mut framed)=self.framed{
-                    //     let result=framed.write(Message::Ping(text));
-                    // }
+                Frame::Pong(text)=>{
                 },
                 
                 Frame::Text(job)=>{
                     // self.master_addr.do_send(JudgeJob(String::from(job.split())));
                     let job:Job=serde_json::from_slice(&job).unwrap();
-                    println!("{:?}",job);
+                    self.master_addr.do_send(JudgeJob(job));
                 },
                 
                 _=>(),
@@ -73,30 +70,19 @@ impl StreamHandler<Result<Frame, WsProtocolError>> for WsClient {
 impl actix::io::WriteHandler<WsProtocolError> for WsClient {}
 
 use actix::StreamHandler;
-
-
+use std::time::Duration;
+use std::{io, thread};
 
 use actix::io::SinkWrite;
-
+use actix::*;
 use actix_codec::Framed;
 use awc::{
     error::WsProtocolError,
     ws::{Codec, Frame, Message},
-    BoxedSocket
+    BoxedSocket, Client,ClientBuilder
 };
-
-use futures::stream::{SplitSink};
-use bson::oid::ObjectId;
-use serde::{Deserialize,Serialize};
+use bytes::Bytes;
+use futures::stream::{SplitSink, StreamExt};
 
 
-
-#[derive(Debug,Serialize,Deserialize)]
-struct Job{
-    _id:ObjectId,
-    question_id:u32,
-    update:u32,
-    user_id:u32,
-    code:String,
-    submit_time:u32,
-}
+use super::Job;

@@ -19,6 +19,10 @@ fn main(){
             Worker::new(addr.clone()).start();
             Worker::new(addr.clone()).start();
             Worker::new(addr.clone()).start();
+            Worker::new(addr.clone()).start();
+            Worker::new(addr.clone()).start();
+            Worker::new(addr.clone()).start();
+            Worker::new(addr.clone()).start();
             Worker::new(addr).start();
         };
     

@@ -34,7 +34,7 @@ impl Worker{
         _job:JudgeJob,
         _ctx:&mut Context<Self>
     ){
-        ()
+        // println!("{:?}",_job);
     }
     
     

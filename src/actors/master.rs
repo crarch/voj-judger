@@ -1,32 +1,51 @@
 use actix::{Actor};
 use uuid::Uuid;
 use actix::prelude::{Context,Handler,Recipient};
+use actix::Addr;
 
-use super::{Connect,JudgeJob};
+use super::message::*;
+use super::wsclient::*;
 
 type Socket=Recipient<JudgeJob>;
 
-//todo: connect websocket
+use std::time::Duration;
+use std::thread;
+
+use actix::StreamHandler;
+use actix::AsyncContext;
+use awc::ClientBuilder;
+use actix::io::SinkWrite;
+use super::WsDisconnect;
+use futures::StreamExt;
+
+use crate::env::get_env;
 
 pub struct Master{
     workers:Vec<(Uuid,Socket)>,
     iter:usize,
-    workers_count:usize
+    workers_count:usize,
+    wsclient_addr:Option<Addr<WsClient>>
 }
 
 
-impl Default for Master{
-    fn default()->Master{
+impl Master{
+    pub fn new()->Master{
         Master{
             workers:Vec::new(),
             workers_count:0,
-            iter:0
+            iter:0,
+            wsclient_addr:None
         }
     }
 }
 
 impl Actor for Master{
     type Context=Context<Self>;
+    
+    fn started(&mut self, ctx: &mut Context<Self>) {
+        ctx.address().do_send(SpawnWsClient);
+    }
+
 }
 
 impl Handler<JudgeJob> for Master{
@@ -76,4 +95,77 @@ impl Master{
         
     }
     
+    
 }
+
+impl Handler<WsDisconnect> for Master{
+    type Result=();
+    
+    fn handle(
+        &mut self,
+        _msg:WsDisconnect,
+        ctx:&mut Context<Self>
+    )->Self::Result{
+        ctx.address().do_send(SpawnWsClient);
+
+    }
+}
+
+
+impl Handler<WsConnect> for Master{
+    type Result=();
+    
+    fn handle(
+        &mut self,
+        addr:WsConnect,
+        ctx:&mut Context<Self>
+    )->Self::Result{
+        
+        let WsConnect(addr)=addr;
+        self.wsclient_addr=Some(addr);
+    }
+}
+
+
+impl Handler<SpawnWsClient> for Master{
+    type Result=();
+    
+    fn handle(
+        &mut self,
+        _:SpawnWsClient,
+        ctx:&mut Context<Self>
+    )->Self::Result{
+        let master_addr=ctx.address();
+        let fut=async move{
+            
+            let key=get_env("JUDGER_KEY");
+            
+            let ws_url="ws".to_string()+&get_env("API_URL")[4..]+"/websocket";
+            
+            if let Ok((response, framed)) = ClientBuilder::new()
+                .header("Authorization",key)
+                .max_http_version(awc::http::Version::HTTP_11)
+                .finish()
+                .ws(ws_url)
+                .connect()
+                .await{
+                let (sink, stream) = framed.split();
+                let addr = WsClient::create(|ctx| {
+                    WsClient::add_stream(stream, ctx);
+                    WsClient{
+                        framed:Some(SinkWrite::new(sink, ctx)),
+                        master_addr:master_addr
+                    }
+                });
+            }else{
+                thread::sleep(Duration::from_millis(2000));
+                master_addr.do_send(SpawnWsClient);
+            }
+        };
+            
+        let fut = actix::fut::wrap_future::<_, Self>(fut);
+        ctx.spawn(fut);
+    }
+    
+}
+

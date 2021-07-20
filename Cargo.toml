@@ -11,16 +11,15 @@ serde_json=""
 serde_derive=""
 dotenv=""
 bson="2.0.0-beta.2"
-actix=""
+actix="^0.12.0"
 uuid= { version = "", features = ["v4"] }
-tokio={version="",features=["io-util"]}
 futures-util=""
 futures=""
 httparse=""
 url=""
-tokio-util=""
-awc="^3.0.0-beta.7"
+awc={version="^3.0.0-beta.7",features=["openssl"]}
 actix-codec="0.4.0"
-bytes=""
 env_logger=""
-
+bytestring=""
+tokio=""
+bytes={version ="1",features =["serde"]}

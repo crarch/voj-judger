@@ -1,20 +1,28 @@
-
-
 use actix::Actor;
 
 mod env;
 mod actors;
-
-
-use actors::Master;
-
 mod judge;
 
-#[actix::main]
-async fn main() {
+use actors::{Master,Worker};
 
-    let _master=Master::new().start();
+use actix::prelude::*;
+fn main(){
+    let system=System::new();
     
-    tokio::signal::ctrl_c().await.unwrap();
-
+    let master_addr=system.block_on(async{Master::new().start()});
+    for _ in 0..16{
+        let addr=master_addr.clone();
+        let a=Arbiter::new();
+    
+        let exec=async move{
+            Worker::new(addr).start();
+        };
+    
+        let _=a.spawn(exec);
+    }
+    
+    
+    system.run();
+    
 }

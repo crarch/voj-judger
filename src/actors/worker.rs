@@ -13,8 +13,12 @@ pub struct Worker{
 impl Actor for Worker{
     type Context=Context<Self>;
     
-    fn started(&mut self, _ctx: &mut Self::Context) {
-    
+    fn started(&mut self, ctx: &mut Self::Context) {
+        let _=self.master_addr.do_send(
+            WorkerConnect(
+                ctx.address()
+            )
+        );
     }
     
     fn stopping(&mut self, _: &mut Self::Context) -> Running {

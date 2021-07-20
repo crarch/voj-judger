@@ -4,10 +4,9 @@ use super::*;
 
 #[derive(Message)]
 #[rtype(result="()")]
-pub struct WorkerConnect{
-    pub addr:Recipient<JudgeJob>,
-    pub self_id:Uuid,
-}
+pub struct WorkerConnect(
+    pub Addr<Worker>
+);
 
 #[derive(Message)]
 #[rtype(result="()")]

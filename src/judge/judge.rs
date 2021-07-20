@@ -18,8 +18,6 @@ pub fn judge(mut job:Job)->Job{
     
     let question_id=job.question_id;
     let user_id=job.user_id;
-    let code=job.code;
-    let submit_time=job.submit_time;
     let testbench_id=question_id;
     
     let _testbench_folder=get_env("JUDGER_HOME")+"/testbenches/"+&question_id.to_string();
@@ -31,9 +29,8 @@ pub fn judge(mut job:Job)->Job{
     mkdir.arg(&job_dir);
     mkdir.output().unwrap();    
 
-    fs::write(&(job_dir+"/code"),&code).unwrap();
+    fs::write(&(job_dir+"/code"),&job.code).unwrap();
 
-    
     
     //todo:Result<(),()>
     let test_bench_dir=get_env("JUDGER_HOME")
@@ -107,15 +104,11 @@ pub fn judge(mut job:Job)->Job{
     
     clean_dir(&job_dir);
     
-    Job{
-        _id:job._id,
-        success:success,
-        user_id:user_id,
-        question_id:question_id,
-        code:code,
-        submit_time:submit_time,
-        test_bench:test_benches,
-    }
+    
+    job.success=success;
+    job.test_bench=test_benches;
+    
+    job
     
 }
 

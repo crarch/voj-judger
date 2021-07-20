@@ -8,18 +8,14 @@ edition = "2018"
 [dependencies]
 serde=""
 serde_json=""
-serde_derive=""
 dotenv=""
 bson="2.0.0-beta.2"
 actix="^0.12.0"
-uuid= { version = "", features = ["v4"] }
 futures-util=""
 futures=""
-httparse=""
 url=""
 awc={version="^3.0.0-beta.7",features=["openssl"]}
 actix-codec="0.4.0"
 env_logger=""
 bytestring=""
-tokio=""
 bytes={version ="1",features =["serde"]}

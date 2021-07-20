@@ -1,4 +1,5 @@
 use super::JudgeJob;
+use super::Job;
 
 use super::Master;
 use super::message::*;

@@ -44,14 +44,6 @@ impl Actor for Master{
     
     fn started(&mut self, ctx: &mut Context<Self>) {
         ctx.address().do_send(SpawnWsClient);
-        
-        // let system = actix::System::new();
-        
-        // for _ in 0..114{//todo
-        //     self.workers.push(Worker::new(ctx.address()).start());
-        //     self.workers_count=self.workers_count+1;
-        // }
-        
     }
 
 }

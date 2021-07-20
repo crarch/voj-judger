@@ -10,8 +10,10 @@ use actix::prelude::*;
 fn main(){
     let system=System::new();
     
+    let workers=crate::env::get_env("WORKERS").parse::<u32>().unwrap();
+    
     let master_addr=system.block_on(async{Master::new().start()});
-    for _ in 0..16{
+    for _ in 0..workers{
         let addr=master_addr.clone();
         let a=Arbiter::new();
     

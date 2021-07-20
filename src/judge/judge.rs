@@ -9,16 +9,14 @@ use bson::doc;
 use super::clean_dir;
 use super::parse;
 use crate::actors::Job;
-use crate::actors::JobResult;
 use std::fs::{self};
 
-pub fn judge(job:Job)->JobResult{
+pub fn judge(mut job:Job)->Job{
     
     
     let job_id=job._id.to_hex();
     
     let question_id=job.question_id;
-    let _update=job.update;
     let user_id=job.user_id;
     let code=job.code;
     let submit_time=job.submit_time;
@@ -109,7 +107,7 @@ pub fn judge(job:Job)->JobResult{
     
     clean_dir(&job_dir);
     
-    JobResult{
+    Job{
         _id:job._id,
         success:success,
         user_id:user_id,

@@ -35,8 +35,12 @@ impl Worker{
 impl Worker{
     
     fn judge(
+        &self,
         job:Job,
     )->(){
+        let result=crate::judge::judge(job);
+        self.master_addr.do_send(JudgeResult(result));
+        
         
     }
     
@@ -48,7 +52,7 @@ impl Handler<JudgeJob> for Worker{
     
     fn handle(&mut self,job:JudgeJob,ctx:&mut Self::Context){
         let JudgeJob(job)=job;
-        Worker::judge(job);
+        self.judge(job);
     }
     
 }

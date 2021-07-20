@@ -65,6 +65,19 @@ impl Handler<JudgeJob> for Master{
     }
 } 
 
+impl Handler<JudgeResult> for Master{
+    type Result=();
+    
+    fn handle(
+        &mut self,
+        job:JudgeResult,
+        _ctx:&mut Context<Self>
+    )->Self::Result{
+        if let Some(ref mut addr)=self.wsclient_addr{
+            addr.do_send(job);
+        }
+    }
+} 
             
 
 impl Master{

@@ -9,7 +9,7 @@ use bson::Bson;
 
 #[derive(Debug)]
 enum Wave{
-    Single((Vec<char>)),
+    Single(Vec<char>),
     Multi((Vec<char>,Vec<String>))
 }
 
@@ -48,7 +48,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                             
                             waves.insert(
                                 line_v[3].to_string(),
-                                Wave::Single((Vec::new())),
+                                Wave::Single(Vec::new()),
                             );
                         },
                         
@@ -81,7 +81,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                             
                             for (_mark,wave) in &mut waves{
                                 match wave{
-                                    Wave::Single((w))=>{
+                                    Wave::Single(w)=>{
                                         loop{
                                             if w.len()<clock {
                                                 w.push('.');
@@ -104,27 +104,27 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                         }
                         Some("x") => {
                             let wire=line.get(1..).unwrap();
-                            if let Some(Wave::Single((w)))=waves.get_mut(wire){
+                            if let Some(Wave::Single(w))=waves.get_mut(wire){
                                 w.push('x');
                             }
                         },
                         Some("1") => { 
                             let wire=line.get(1..).unwrap();
-                            if let Some(Wave::Single((w)))=waves.get_mut(wire){
+                            if let Some(Wave::Single(w))=waves.get_mut(wire){
                                 w.push('1');
                             }
                         },
                         
                         Some("0") => { 
                             let wire=line.get(1..).unwrap();
-                            if let Some(Wave::Single((w)))=waves.get_mut(wire){
+                            if let Some(Wave::Single(w))=waves.get_mut(wire){
                                 w.push('0');
                             }
                         },
                         
                         Some("z") => { 
                             let wire=line.get(1..).unwrap();
-                            if let Some(Wave::Single((w)))=waves.get_mut(wire){
+                            if let Some(Wave::Single(w))=waves.get_mut(wire){
                                 w.push('z');
                             }
                         },
@@ -146,7 +146,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     
     for (_mark,wave) in &mut waves{
         match wave{
-            Wave::Single((w))=>{
+            Wave::Single(w)=>{
                 loop{
                     if w.len()<=clock {
                         w.push('.');
@@ -176,7 +176,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     let value=waves.get(mismatch).unwrap();
     
     match value{
-        Wave::Single((w))=>{
+        Wave::Single(w)=>{
             length=w.len();
             while i<length {
                 if w[i]=='1' {
@@ -213,16 +213,16 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     //avoid wave:.........
     for (_mark,wave) in &mut waves{
         match wave{
-            Wave::Single((w))=>{
+            Wave::Single(w)=>{
                 let mut iter=i;
-                while(w[iter]=='.'){
+                while w[iter]=='.' {
                     iter=iter-1;
                 }
                 w[i]=w[iter];
             },
             Wave::Multi((w,_))=>{
                 let mut iter=i;
-                while(w[iter]=='.'){
+                while w[iter]=='.' {
                     iter=iter-1;
                 }
                 w[i]=w[iter];
@@ -250,30 +250,30 @@ pub fn parse(input_vcd:&str)->Option<Document>{
         let symbol=mapper.get(iter).unwrap();
         if let Some(value)=waves.get(symbol){
             match value{
-                Wave::Single((w))=>{
+                Wave::Single(w)=>{
                     
-                    if(iter.starts_with("y_")){
+                    if iter.starts_with("y_") {
                         let name=(iter[2..]).to_string();
                         let wave=doc!(
                             "name":name,
                             "wave":w[i..end].into_iter().collect::<String>()
                         );
                         yours.push(bson::Bson::Document(wave));
-                    }else if(iter.starts_with("r_")){
+                    }else if iter.starts_with("r_") {
                         let name=(iter[2..]).to_string();
                         let wave=doc!(
                             "name":name,
                             "wave":w[i..end].into_iter().collect::<String>()
                         );
                         reference.push(bson::Bson::Document(wave));
-                    }else if(iter.starts_with("i_")){
+                    }else if iter.starts_with("i_") {
                         let name=(iter[2..]).to_string();
                         let wave=doc!(
                             "name":name,
                             "wave":w[i..end].into_iter().collect::<String>()
                         );
                         input.push(bson::Bson::Document(wave));
-                    }else if(iter=="mismatch"){
+                    }else if iter=="mismatch" {
                         let wave=doc!(
                             "name":iter.to_string(),
                             "wave":w[i..end].into_iter().collect::<String>()
@@ -294,7 +294,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                     for iter in words_iter{
                         data=data+" "+iter;
                     }
-                    if(iter.starts_with("y_")){
+                    if iter.starts_with("y_") {
                         let name=(iter[2..]).to_string();
                         let wave=doc!(
                             "name":name,
@@ -302,7 +302,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                             "data":data
                         );
                         yours.push(bson::Bson::Document(wave));
-                    }else if(iter.starts_with("r_")){
+                    }else if iter.starts_with("r_") {
                         let name=(iter[2..]).to_string();
                         let wave=doc!(
                             "name":name,
@@ -310,7 +310,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                             "data":data
                         );
                         reference.push(bson::Bson::Document(wave));
-                    }else if(iter.starts_with("i_")){
+                    }else if iter.starts_with("i_") {
                         let name=(iter[2..]).to_string();
                         let wave=doc!(
                             "name":name,
@@ -332,12 +332,12 @@ pub fn parse(input_vcd:&str)->Option<Document>{
         }
     }
     
-    if(debug.len()>1){
+    if debug.len()>1 {
         signal.push(bson::Bson::Array(debug));
         signal.push(bson::Bson::Document(doc!{}));
     }
     
-    if(input.len()>1){
+    if input.len()>1 {
         signal.push(bson::Bson::Array(input));
         signal.push(bson::Bson::Document(doc!{}));
     }

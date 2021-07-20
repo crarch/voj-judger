@@ -4,7 +4,7 @@ use super::Master;
 use super::message::*;
 
 use actix::prelude::*;
-use uuid::Uuid;
+
 
 pub struct Worker{
     master_addr:Addr<Master>
@@ -13,7 +13,7 @@ pub struct Worker{
 impl Actor for Worker{
     type Context=Context<Self>;
     
-    fn started(&mut self, ctx: &mut Self::Context) {
+    fn started(&mut self, _ctx: &mut Self::Context) {
     
     }
     
@@ -50,7 +50,7 @@ impl Worker{
 impl Handler<JudgeJob> for Worker{
     type Result=();
     
-    fn handle(&mut self,job:JudgeJob,ctx:&mut Self::Context){
+    fn handle(&mut self,job:JudgeJob,_ctx:&mut Self::Context){
         let JudgeJob(job)=job;
         self.judge(job);
     }

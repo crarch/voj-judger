@@ -1,6 +1,6 @@
 use actix::{Actor};
-use uuid::Uuid;
-use actix::prelude::{Context,Handler,Recipient};
+
+use actix::prelude::{Context,Handler};
 use actix::Addr;
 
 use super::message::*;
@@ -83,10 +83,10 @@ impl Handler<JudgeResult> for Master{
 impl Master{
     fn send_job(&mut self,job:JudgeJob){
         
-        if(self.workers_count==0){
+        if self.workers_count==0 {
             ()
         }else{
-            if(self.iter==self.workers_count){
+            if self.iter==self.workers_count {
                 self.iter=0;
             }
             
@@ -123,7 +123,7 @@ impl Handler<WsConnect> for Master{
     fn handle(
         &mut self,
         addr:WsConnect,
-        ctx:&mut Context<Self>
+        _ctx:&mut Context<Self>
     )->Self::Result{
         
         
@@ -148,7 +148,7 @@ impl Handler<SpawnWsClient> for Master{
             
             let ws_url="ws".to_string()+&get_env("API_URL")[4..]+"/websocket";
             
-            if let Ok((response, framed)) = ClientBuilder::new()
+            if let Ok((_response, framed)) = ClientBuilder::new()
                 .header("Authorization",key)
                 .max_http_version(awc::http::Version::HTTP_11)
                 .finish()
@@ -156,7 +156,7 @@ impl Handler<SpawnWsClient> for Master{
                 .connect()
                 .await{
                 let (sink, stream) = framed.split();
-                let addr = WsClient::create(|ctx| {
+                let _addr = WsClient::create(|ctx| {
                     WsClient::add_stream(stream, ctx);
                     WsClient{
                         framed:SinkWrite::new(sink, ctx),

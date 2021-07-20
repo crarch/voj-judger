@@ -29,7 +29,7 @@ impl Handler<JudgeResult> for WsClient{
         let JudgeResult(result)=result;
         let result=serde_json::to_string(&result).unwrap();
         let result=bytestring::ByteString::from(result);
-        self.framed.write(Message::Text(result));
+        let _=self.framed.write(Message::Text(result));
     }
     
 }
@@ -41,16 +41,16 @@ impl StreamHandler<Result<Frame, WsProtocolError>> for WsClient {
         if let Ok(msg)=msg{
             
             
-            match(msg){
+            match msg{
                 Frame::Ping(text)=>{
-                    self.framed.write(Message::Ping(text));
+                    let _=self.framed.write(Message::Ping(text));
                 },
-                Frame::Pong(text)=>{
+                Frame::Pong(_text)=>{
                 },
                 
                 Frame::Text(job)=>{
                     let job:Job=serde_json::from_slice(&job).unwrap();
-                    self.master_addr.do_send(JudgeJob(job));
+                    let _=self.master_addr.do_send(JudgeJob(job));
                 },
                 
                 _=>(),
@@ -73,19 +73,19 @@ impl StreamHandler<Result<Frame, WsProtocolError>> for WsClient {
 impl actix::io::WriteHandler<WsProtocolError> for WsClient {}
 
 use actix::StreamHandler;
-use std::time::Duration;
-use std::{io, thread};
+
+
 
 use actix::io::SinkWrite;
-use actix::*;
+
 use actix_codec::Framed;
 use awc::{
     error::WsProtocolError,
     ws::{Codec, Frame, Message},
-    BoxedSocket, Client,ClientBuilder
+    BoxedSocket
 };
-use bytes::Bytes;
-use futures::stream::{SplitSink, StreamExt};
+
+use futures::stream::{SplitSink};
 
 
 use super::Job;

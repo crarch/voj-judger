@@ -17,7 +17,7 @@ pub fn judge(mut job:Job)->Job{
     let job_id=job._id.to_hex();
     
     let question_id=job.question_id;
-    let user_id=job.user_id;
+    let _user_id=job.user_id;
     let testbench_id=question_id;
     
     let _testbench_folder=get_env("JUDGER_HOME")+"/testbenches/"+&question_id.to_string();

@@ -32,6 +32,6 @@ fn main(){
     }
     
     
-    system.run();
+    let _=system.run();
     
 }

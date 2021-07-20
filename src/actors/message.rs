@@ -1,5 +1,5 @@
 use actix::prelude::*;
-use uuid::Uuid;
+
 use super::*;
 
 #[derive(Message)]

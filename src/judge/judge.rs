@@ -66,6 +66,9 @@ pub fn judge(mut job:Job)->Job{
             .unwrap()
             .to_str()
             .unwrap()
+            .to_string();
+            
+        let id=id[..(id.len()-2)]
             .parse::<u32>()
             .unwrap();
         

@@ -1,3 +1,4 @@
+#![allow(unused_parens)]
 use actix::Actor;
 
 mod env;

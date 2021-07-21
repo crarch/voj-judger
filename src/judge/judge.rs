@@ -11,37 +11,32 @@ use super::parse;
 use crate::actors::Job;
 use std::fs::{self};
 
+
 pub fn judge(mut job:Job)->Job{
     
-    
-    let job_id=job._id.to_hex();
-    
-    let question_id=job.question_id;
-    let _user_id=job.user_id;
-    let testbench_id=question_id;
-    
-    let _testbench_folder=get_env("JUDGER_HOME")+"/testbenches/"+&question_id.to_string();
-    
-    let job_dir=get_env("JUDGER_HOME")+"/jobs/"+&job_id;
-    
-    let mut mkdir=Command::new("mkdir");
-    mkdir.arg("-p");
-    mkdir.arg(&job_dir);
-    mkdir.output().unwrap();    
-
-    fs::write(&(job_dir+"/code"),&job.code).unwrap();
-
-    
-    //todo:Result<(),()>
+    let testbench_id=job.question_id;
     let test_bench_dir=get_env("JUDGER_HOME")
         +"/testbenches/"
         +&(testbench_id.to_string());
     
-    let job_dir=get_env("JUDGER_HOME")
-        +"/jobs/"
-        +&job_id;
-        
+    let test_bench_dir=Path::new(&test_bench_dir);    
+    if(!test_bench_dir.exists()){
+        job.success=false;
+        job.test_bench=doc!{
+            "error":"no such question"
+        };
+        return job;
+    }
     
+        
+    let job_id=job._id.to_hex();
+    
+    let job_dir=get_env("JUDGER_HOME")+"/jobs/"+&job_id;
+    let mut mkdir=Command::new("mkdir");
+    mkdir.arg("-p");
+    mkdir.arg(&job_dir);
+    mkdir.output().unwrap();    
+    fs::write(&(job_dir.clone()+"/code"),&job.code).unwrap();
     
     
     
@@ -53,7 +48,7 @@ pub fn judge(mut job:Job)->Job{
     make_dir_vcd.arg(format!("{}/vcd",&job_dir));
     make_dir_vcd.output().unwrap();
     
-    let test_bench_dir=Path::new(&test_bench_dir);    
+        
     
     let test_points=test_bench_dir.read_dir().unwrap();
     

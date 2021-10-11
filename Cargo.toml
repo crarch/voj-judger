@@ -19,4 +19,4 @@ actix-codec="0.4.0"
 env_logger="*"
 bytestring="*"
 bytes={version ="1",features =["serde"]}
-actix_web_actors="^4.0.0-beta.7"
+actix-web-actors="^4.0.0-beta.7"

@@ -118,10 +118,12 @@ fn judge_test_point(test_point:&str,job_dir:&str,id:u32)->Option<Document>{
     
     //cmd:iverilog code tb
     let mut test=Command::new("iverilog");
+    test.arg("-Tmax");
     test.arg(format!("{}/code",&job_dir));
     test.arg(test_point);
     test.arg("-o");
     test.arg(format!("{}/a.out",&job_dir));
+    
     
     //todo:pass compile error message
     let std_err=test.output().unwrap().stderr;

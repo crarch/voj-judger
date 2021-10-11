@@ -8,7 +8,7 @@ use std::time::{Duration, Instant};
 pub struct WsClient{
     pub framed:SinkWrite<Message, SplitSink<Framed<BoxedSocket, Codec>, Message>>,
     pub master_addr:Addr<Master>,
-    hb:Instant,
+    pub hb:Instant,
 }
 
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(2);

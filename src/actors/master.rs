@@ -17,6 +17,7 @@ use actix::io::SinkWrite;
 use super::WsDisconnect;
 use super::Worker;
 use futures::StreamExt;
+use std::time::{Duration, Instant};
 
 use crate::env::get_env;
 
@@ -170,6 +171,7 @@ impl Handler<SpawnWsClient> for Master{
                     WsClient{
                         framed:SinkWrite::new(sink, ctx),
                         master_addr:master_addr
+                        hb:Instant::now()
                     }
                 });
             }else{

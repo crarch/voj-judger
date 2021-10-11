@@ -6,16 +6,16 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde=""
-serde_json=""
-dotenv=""
+serde="*"
+serde_json="*"
+dotenv="*"
 bson="2.0.0-beta.2"
 actix="^0.12.0"
-futures-util=""
-futures=""
-url=""
+futures-util="*"
+futures="*"
+url="*"
 awc={version="^3.0.0-beta.7",features=["openssl"]}
 actix-codec="0.4.0"
-env_logger=""
-bytestring=""
+env_logger="*"
+bytestring="*"
 bytes={version ="1",features =["serde"]}

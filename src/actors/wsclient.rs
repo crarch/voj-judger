@@ -3,12 +3,28 @@ use super::Master;
 use super::WsDisconnect;
 use super::message::*;
 
+use std::time::{Duration, Instant};
+
 pub struct WsClient{
     pub framed:SinkWrite<Message, SplitSink<Framed<BoxedSocket, Codec>, Message>>,
-    pub master_addr:Addr<Master>
+    pub master_addr:Addr<Master>,
+    hb:Instant,
 }
+
+const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(2);
+const CLIENT_TIMEOUT: Duration = Duration::from_secs(5);
     
 impl WsClient{
+    fn hb(&self, ctx: &mut ws::WebsocketContext<Self>) {
+        ctx.run_interval(HEARTBEAT_INTERVAL, |act, ctx| {
+            if Instant::now().duration_since(act.hb) > CLIENT_TIMEOUT {
+                act.queue_addr.do_send(Disconnect { id: act.id });
+                ctx.stop();
+                return;
+            }
+                
+        });
+    }
 }
     
         
@@ -17,7 +33,15 @@ impl Actor for WsClient {
     type Context = Context<Self>;
 
     fn started(&mut self, ctx: &mut Context<Self>) {
+        self.hb(ctx);
+        
         self.master_addr.do_send(WsConnect(ctx.address()));
+    }
+    
+    fn stopping(&mut self,_ctx:&mut Self::Context)->Running{
+        println!("Server disconnected");
+        self.master_addr.do_send(WsDisconnect);
+        Running::Stop
     }
     
 }
@@ -32,6 +56,7 @@ impl Handler<JudgeResult> for WsClient{
         let _=self.framed.write(Message::Text(result));
     }
     
+    
 }
         
 
@@ -43,6 +68,7 @@ impl StreamHandler<Result<Frame, WsProtocolError>> for WsClient {
             
             match msg{
                 Frame::Ping(text)=>{
+                    self.hb=Instant::now();
                     let _=self.framed.write(Message::Ping(text));
                 },
                 Frame::Pong(_text)=>{
@@ -64,8 +90,6 @@ impl StreamHandler<Result<Frame, WsProtocolError>> for WsClient {
     }
 
     fn finished(&mut self, ctx: &mut Context<Self>) {
-        self.master_addr.do_send(WsDisconnect);
-        println!("Server disconnected");
         ctx.stop()
     }
 }

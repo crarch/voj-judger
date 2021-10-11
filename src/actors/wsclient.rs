@@ -2,6 +2,7 @@ use actix::prelude::*;
 use super::Master;
 use super::WsDisconnect;
 use super::message::*;
+use actix_web_actors::ws;
 
 use std::time::{Duration, Instant};
 
@@ -18,7 +19,6 @@ impl WsClient{
     fn hb(&self, ctx: &mut ws::WebsocketContext<Self>) {
         ctx.run_interval(HEARTBEAT_INTERVAL, |act, ctx| {
             if Instant::now().duration_since(act.hb) > CLIENT_TIMEOUT {
-                act.queue_addr.do_send(Disconnect { id: act.id });
                 ctx.stop();
                 return;
             }

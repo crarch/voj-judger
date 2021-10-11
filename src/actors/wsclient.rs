@@ -2,7 +2,6 @@ use actix::prelude::*;
 use super::Master;
 use super::WsDisconnect;
 use super::message::*;
-use actix_web_actors::ws;
 
 use std::time::{Duration, Instant};
 
@@ -16,7 +15,7 @@ const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(2);
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(5);
     
 impl WsClient{
-    fn hb(&self, ctx: &mut ws::WebsocketContext<Self>) {
+    fn hb(&self, ctx: &mut Context<Self>) {
         ctx.run_interval(HEARTBEAT_INTERVAL, |act, ctx| {
             if Instant::now().duration_since(act.hb) > CLIENT_TIMEOUT {
                 ctx.stop();

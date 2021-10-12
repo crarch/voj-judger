@@ -365,5 +365,5 @@ fn binary_to_hex(val: &str) -> String {
         return format!("{:X}", n)
     }
     
-    val.to_string();
+    val.to_string()
 }

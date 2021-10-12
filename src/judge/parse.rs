@@ -361,7 +361,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     
 
 fn binary_to_hex(val: &str) -> String {
-    if let n: u32 = u32::from_str_radix(val, 2){
+    if let Ok(n:u32) = u32::from_str_radix(val, 2){
         return format!("{:X}", n)
     }
     

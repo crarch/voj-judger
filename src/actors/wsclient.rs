@@ -68,7 +68,7 @@ impl StreamHandler<Result<Frame, WsProtocolError>> for WsClient {
             match msg{
                 Frame::Ping(text)=>{
                     self.hb=Instant::now();
-                    let _=self.framed.write(Message::Ping(text));
+                    let _=self.framed.write(Message::Pong(text));
                 },
                 Frame::Pong(_text)=>{
                 },

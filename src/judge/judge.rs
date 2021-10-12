@@ -99,8 +99,9 @@ pub fn judge(mut job:Job)->Job{
         
     }
     
-    
-    clean_dir(&job_dir);
+    if(get_env("DEBUG")!="true"){
+        clean_dir(&job_dir);
+    }
     
     
     job.success=success;

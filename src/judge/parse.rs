@@ -292,6 +292,9 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                     }
                 },
                 Wave::Multi((w,words))=>{
+                    if(words.len()==0){
+                        continue;
+                    }
                     let mut data=words[0].clone();
                     let mut words_iter=words.iter();
                     words_iter.next();

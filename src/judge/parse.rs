@@ -128,10 +128,10 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                                 w.push('z');
                             }
                         },
-                        Some(b_) => {
+                        Some(_b) => {
                             let line_v:Vec<&str>=line.split(' ').collect();
                             if let Some(Wave::Multi((w,data)))=waves.get_mut(line_v[1]){
-                                if(line_v[0][..]=="bx"){
+                                if(&line_v[0][..]=="bx"){
                                     w.push('x');
                                 }else{
                                     w.push('=');

@@ -179,7 +179,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
         Wave::Single(w)=>{
             length=w.len();
             while i<length {
-                if (w[i]!='0'||w[i]!='.') {
+                if (w[i]!='0'&&w[i]!='.') {
                     break;
                 }else{
                     i=i+1;

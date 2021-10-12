@@ -292,15 +292,17 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                     }
                 },
                 Wave::Multi((w,words))=>{
-                    if(words.len()==0){
-                        continue;
+                    let mut data="";
+                    
+                    if(words.len()!=0){
+                        data=words[0].clone()
+                        let mut words_iter=words.iter();
+                        words_iter.next();
+                        for iter in words_iter{
+                            data=data+" "+iter;
+                        }
                     }
-                    let mut data=words[0].clone();
-                    let mut words_iter=words.iter();
-                    words_iter.next();
-                    for iter in words_iter{
-                        data=data+" "+iter;
-                    }
+                    
                     if iter.starts_with("y_") {
                         let name=(iter[2..]).to_string();
                         let wave=doc!(

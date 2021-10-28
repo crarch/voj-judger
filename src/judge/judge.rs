@@ -153,11 +153,24 @@ fn judge_test_point(test_point:&str,job_dir:&str,id:u32)->Option<Document>{
     
     
     //cmd:./a.out
-    let mut run=Command::new(
-        format!("{}/a.out",&job_dir)
-    );
+    // let mut run=Command::new(
+    //     format!("{}/a.out",&job_dir)
+    // );
+    let mut run=Command::new("timeout");
+    run.arg("2");
+    run.arg(format!("{}/a.out",&job_dir));
     run.current_dir(job_dir);
-    run.output().unwrap();
+    let output=run.output().unwrap();
+    
+    if let Some(code)=output.status.code(){
+        if(code==124){
+            let result=doc!{
+                "run_timeout":"timeout",
+            };
+            return Some(result);
+        }
+        //return time out
+    }
     
     let vcd=format!("{}/vcd/{}.vcd",job_dir,id);
     

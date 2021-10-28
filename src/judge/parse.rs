@@ -175,39 +175,36 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     let mut i=0;
     let length;
     
-    if let Some(mismatch)=mapper.get("mismatch"){
+    let mismatch=mapper.get("mismatch").unwrap();
     
-        let value=waves.get(mismatch).unwrap();
-        
-        match value{
-            Wave::Single(w)=>{
-                length=w.len();
-                while i<length {
-                    if (w[i]!='0'&&w[i]!='.') {
-                        break;
-                    }else{
-                        i=i+1;
-                    }
+    let value=waves.get(mismatch).unwrap();
+    
+    match value{
+        Wave::Single(w)=>{
+            length=w.len();
+            while i<length {
+                if (w[i]!='0'&&w[i]!='.') {
+                    break;
+                }else{
+                    i=i+1;
                 }
-            },
-            _=>{
-                length=0
-            },
-        }
-        
-        if i==length {
-            return None;
-        } 
-        
-        if i>=19 {
-            i=i-19;
-        }else{
-            i=0;
-        }
-        
-    }else{
-        length=20;
+            }
+        },
+        _=>{
+            length=0
+        },
     }
+    
+    if i==length {
+        return None;
+    } 
+    
+    if i>=19 {
+        i=i-19;
+    }else{
+        i=0;
+    }
+        
     
     let end;
     
@@ -254,6 +251,8 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     yours.push(bson::Bson::String("Yours".to_string()));
     
     let mut mismatch=doc!{};
+    
+    let mut playground=true;
 
     for iter in order.iter(){
         let symbol=mapper.get(iter).unwrap();
@@ -275,6 +274,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                             "wave":w[i..end].into_iter().collect::<String>()
                         );
                         reference.push(bson::Bson::Document(wave));
+                        playground=false;
                     }else if iter.starts_with("i_") {
                         let name=(iter[2..]).to_string();
                         let wave=doc!(
@@ -356,12 +356,15 @@ pub fn parse(input_vcd:&str)->Option<Document>{
         signal.push(bson::Bson::Document(doc!{}));
     }
     
-    signal.push(bson::Bson::Array(yours));
-    signal.push(bson::Bson::Document(doc!{}));
-    
-    signal.push(bson::Bson::Array(reference));
-    
-    signal.push(bson::Bson::Document(mismatch));
+    if !playground{
+        
+        signal.push(bson::Bson::Array(yours));
+        signal.push(bson::Bson::Document(doc!{}));
+        
+        signal.push(bson::Bson::Array(reference));
+        
+        signal.push(bson::Bson::Document(mismatch));
+    }
     
     let result=doc!{
         "head":doc!{"tock":i as u32},

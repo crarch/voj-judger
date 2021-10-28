@@ -175,42 +175,44 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     let mut i=0;
     let length;
     
-    let mismatch=mapper.get("mismatch").unwrap();
+    if let Some(mismatch)=mapper.get("mismatch"){
     
-    let value=waves.get(mismatch).unwrap();
-    
-    match value{
-        Wave::Single(w)=>{
-            length=w.len();
-            while i<length {
-                if (w[i]!='0'&&w[i]!='.') {
-                    break;
-                }else{
-                    i=i+1;
+        let value=waves.get(mismatch).unwrap();
+        
+        match value{
+            Wave::Single(w)=>{
+                length=w.len();
+                while i<length {
+                    if (w[i]!='0'&&w[i]!='.') {
+                        break;
+                    }else{
+                        i=i+1;
+                    }
                 }
-            }
-        },
-        _=>{
-            length=0
-        },
-    }
-    
-    if i==length {
-        return None;
-    } 
-    
-    if i>=19 {
-        i=i-19;
-    }else{
-        i=0;
-    }
-    
-    let end;
-    
-    if length>i+20 {
-        end=i+20;
-    }else{
-        end=length;
+            },
+            _=>{
+                length=0
+            },
+        }
+        
+        if i==length {
+            return None;
+        } 
+        
+        if i>=19 {
+            i=i-19;
+        }else{
+            i=0;
+        }
+        
+        let end;
+        
+        if length>i+20 {
+            end=i+20;
+        }else{
+            end=length;
+        }
+        
     }
     
     

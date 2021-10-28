@@ -205,15 +205,18 @@ pub fn parse(input_vcd:&str)->Option<Document>{
             i=0;
         }
         
-        let end;
-        
-        if length>i+20 {
-            end=i+20;
-        }else{
-            end=length;
-        }
-        
+    }else{
+        length=20;
     }
+    
+    let end;
+    
+    if length>i+20 {
+        end=i+20;
+    }else{
+        end=length;
+    }
+        
     
     
     //avoid wave:.........

@@ -118,7 +118,10 @@ fn judge_test_point(test_point:&str,job_dir:&str,id:u32)->Option<Document>{
     //todo:Result<(),()>
     
     //cmd:iverilog code tb
-    let mut test=Command::new("iverilog");
+    // let mut test=Command::new("iverilog");
+    let mut test=Command::new("timeout");
+    test.arg("2");
+    test.arg("iverilog");
     test.arg("-Tmax");
     test.arg("-g2012");
     test.arg(format!("{}/code",&job_dir));
@@ -127,8 +130,19 @@ fn judge_test_point(test_point:&str,job_dir:&str,id:u32)->Option<Document>{
     test.arg(format!("{}/a.out",&job_dir));
     
     
+    let output=test.output().unwrap();
+    
+    if let Some(code)=output.status.code(){
+        if(code==124){
+            let result=doc!{
+                "compile_timeout":"timeout",
+            };
+            return Some(result);
+        }
+        //return time out
+    }
     //todo:pass compile error message
-    let std_err=test.output().unwrap().stderr;
+    let std_err=output.stderr;
     let std_err=String::from_utf8(std_err).unwrap();
     if std_err!="" {
         let result=doc!{

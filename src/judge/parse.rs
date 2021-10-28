@@ -252,8 +252,6 @@ pub fn parse(input_vcd:&str)->Option<Document>{
     
     let mut mismatch=doc!{};
     
-    let mut playground=true;
-
     for iter in order.iter(){
         let symbol=mapper.get(iter).unwrap();
         if let Some(value)=waves.get(symbol){
@@ -274,7 +272,6 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                             "wave":w[i..end].into_iter().collect::<String>()
                         );
                         reference.push(bson::Bson::Document(wave));
-                        playground=false;
                     }else if iter.starts_with("i_") {
                         let name=(iter[2..]).to_string();
                         let wave=doc!(
@@ -356,7 +353,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
         signal.push(bson::Bson::Document(doc!{}));
     }
     
-    if !playground{
+    if reference.len()>1{
         
         signal.push(bson::Bson::Array(yours));
         signal.push(bson::Bson::Document(doc!{}));

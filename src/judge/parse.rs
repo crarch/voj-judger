@@ -353,7 +353,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
         signal.push(bson::Bson::Document(doc!{}));
     }
     
-    if reference.len()>1{
+    if reference.len()>0{
         
         signal.push(bson::Bson::Array(yours));
         signal.push(bson::Bson::Document(doc!{}));

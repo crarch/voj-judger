@@ -343,13 +343,14 @@ pub fn parse(input_vcd:&str)->Option<Document>{
         }
     }
     
-    if debug.len()>1 {
-        signal.push(bson::Bson::Array(debug));
-        signal.push(bson::Bson::Document(doc!{}));
-    }
     
     if input.len()>1 {
         signal.push(bson::Bson::Array(input));
+        signal.push(bson::Bson::Document(doc!{}));
+    }
+    
+    if debug.len()>1 {
+        signal.push(bson::Bson::Array(debug));
         signal.push(bson::Bson::Document(doc!{}));
     }
     

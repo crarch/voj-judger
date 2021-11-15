@@ -300,15 +300,16 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                     
                     
                     if(words.len()!=0){
-                        data=words[0].clone();
+                        // data=words[0].clone();
                         let mut words_iter=words.iter();
-                        words_iter.next();
+                        // words_iter.next();
                         
                         for j in 0..i{
                             if(w[j]=='='){
                                 words_iter.next();
                             }
                         }
+                        data="".to_string();
                             
                         for iter in words_iter{
                             data=data+" "+iter;

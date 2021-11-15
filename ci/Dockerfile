@@ -3,7 +3,7 @@ FROM debian:bullseye-slim
 
 RUN \
     apt update && \
-    apt install iverilog -y
+    apt install iverilog ca-certificates -y
 
 #COPY . .    
 COPY target/release/voj_judger /usr/local/bin

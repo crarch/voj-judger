@@ -11,7 +11,7 @@ steps:
     #-   cp target/release/voj_judger /release
     volumes:
     -   name: release 
-        path: /drone/release 
+        path: /root/release 
 
   
 - 
@@ -26,7 +26,7 @@ steps:
             from_secret: docker_password
     volumes:
     -   name: release 
-        path: /drone/release 
+        path: /root/release 
         
     when:
         event: tag

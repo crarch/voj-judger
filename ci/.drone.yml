@@ -7,10 +7,8 @@ steps:
     name: build
     image: rust:1.55
     commands:
-    #-   cargo build --verbose --all --release
-    #-   cp target/release/voj_judger /release
-    -   mkdir -p target/release
-    -   touch target/release/voj_judger
+    -   cargo build --verbose --all --release
+    -   cp target/release/voj_judger /release
 
   
 - 

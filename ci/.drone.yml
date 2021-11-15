@@ -10,7 +10,7 @@ steps:
     #-   cargo build --verbose --all --release
     #-   cp target/release/voj_judger /release
     volumes:
-    -   name: release 
+    -   name: binary 
         path: /root/release 
 
   
@@ -25,12 +25,12 @@ steps:
         password:
             from_secret: docker_password
     volumes:
-    -   name: release 
+    -   name: binary 
         path: /root/release 
         
     when:
         event: tag
 
 volumes:
--   name: release
+-   name: binary
     temp: {}

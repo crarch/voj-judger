@@ -6,7 +6,7 @@ RUN \
     apt install iverilog -y
 
 #COPY . .    
-COPY /release/voj_judger /usr/local/bin
+COPY target/release/voj_judger /usr/local/bin
 
 
 

@@ -7,20 +7,30 @@ steps:
     name: build
     image: rust:1.55
     commands:
-        - cargo build --release --verbose --all
+    -   cargo build --verbose --all #--release
+    -   cp target/release/voj_judger /release
+    volumes:
+    -   name: release 
+        path: /release 
 
   
 - 
     name: docker  
     image: plugins/docker
     settings:
+        dockerfile: ci/Dockerfile
         repo: phyzaitlu/voj-judger 
         username:
             from_secret: docker_username
         password:
             from_secret: docker_password
-#    trigger:
-#        event: tag
+    volumes:
+    -   name: release 
+        path: /release 
         
     when:
         event: tag
+
+volumes:
+-   name: release
+    temp: {}

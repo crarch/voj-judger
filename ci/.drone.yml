@@ -17,6 +17,7 @@ steps:
 - 
     name: push  
     image: plugins/docker
+    debug: true
     settings:
         #dockerfile: ci/Dockerfile
         repo: phyzaitlu/voj-judger 

@@ -1,6 +1,5 @@
 FROM debian:bullseye-slim
 
-ENV PATH="/usr/local/bin:${PATH}"
 
 RUN \
     apt update && \

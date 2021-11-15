@@ -7,8 +7,8 @@ steps:
     name: build
     image: rust:1.55
     commands:
-    -   cargo build --verbose --all --release
-    -   cp target/release/voj_judger /release
+    #-   cargo build --verbose --all --release
+    #-   cp target/release/voj_judger /release
     volumes:
     -   name: release 
         path: /release 
@@ -18,7 +18,7 @@ steps:
     name: push  
     image: plugins/docker
     settings:
-        dockerfile: ci/Dockerfile
+        #dockerfile: ci/Dockerfile
         repo: phyzaitlu/voj-judger 
         username:
             from_secret: docker_username

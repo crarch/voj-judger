@@ -15,7 +15,7 @@ steps:
 
   
 - 
-    name: docker  
+    name: push  
     image: plugins/docker
     settings:
         dockerfile: ci/Dockerfile

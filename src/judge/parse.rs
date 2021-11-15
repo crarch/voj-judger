@@ -295,13 +295,7 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                 },
                 Wave::Multi((w,words))=>{
                     let mut data=String::new();
-                    let mut word_start=0;
                     
-                    for j in 0..i{
-                        if(w[j]=='='){
-                            word_start=word_start+1;
-                        }
-                    }
                     
                     
                     
@@ -310,8 +304,10 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                         let mut words_iter=words.iter();
                         words_iter.next();
                         
-                        for _ in 0..word_start{
-                            words_iter.next();
+                        for j in 0..i{
+                            if(w[j]=='='){
+                                words_iter.next();
+                            }
                         }
                             
                         for iter in words_iter{

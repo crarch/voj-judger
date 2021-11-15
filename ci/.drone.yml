@@ -24,9 +24,9 @@ steps:
             from_secret: docker_username
         password:
             from_secret: docker_password
-    volumes:
-    -   name: release 
-        path: /release 
+    #volumes:
+    #-   name: release 
+    #    path: /release 
         
     when:
         event: tag

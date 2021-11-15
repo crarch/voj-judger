@@ -295,11 +295,25 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                 },
                 Wave::Multi((w,words))=>{
                     let mut data=String::new();
+                    let mut word_start=0;
+                    
+                    for j in 0..i{
+                        if(w[j]=='='){
+                            word_start=word_start+1;
+                        }
+                    }
+                    
+                    
                     
                     if(words.len()!=0){
                         data=words[0].clone();
                         let mut words_iter=words.iter();
                         words_iter.next();
+                        
+                        for _ in 0..word_start{
+                            words_iter.next();
+                        }
+                            
                         for iter in words_iter{
                             data=data+" "+iter;
                         }

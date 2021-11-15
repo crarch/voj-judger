@@ -3,19 +3,22 @@ type: docker
 name: default
 
 steps:
-- name: test
-  image: rust:1.55
-  commands:
-  - cargo build --verbose --all
+- name: build
+    image: rust:1.55
+    commands:
+        - cargo build --verbose --all
 
   
 - name: docker  
-  image: plugins/docker
-  settings:
-    repo: phyzaitlu/voj-judger 
-    username:
-      from_secret: docker_username
-    password:
-      from_secret: docker_password
+    image: plugins/docker
+    settings:
+        repo: phyzaitlu/voj-judger 
+        username:
+            from_secret: docker_username
+        password:
+            from_secret: docker_password
     trigger:
-      event: tag
+        event: tag
+        
+#    when:
+#        event: tag

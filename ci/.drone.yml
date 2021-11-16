@@ -13,11 +13,10 @@ steps:
   
 - 
     name: push  
-    image: plugins/buildah-docker
+    image: plugins/docker
     settings:
         dockerfile: ci/Dockerfile
         repo: phyzaitlu/voj-judger 
-        daemon_off: false
         username:
             from_secret: docker_username
         password:

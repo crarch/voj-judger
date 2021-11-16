@@ -304,9 +304,11 @@ pub fn parse(input_vcd:&str)->Option<Document>{
                         let mut words_iter=words.iter();
                         // words_iter.next();
                         
-                        for j in 0..(i-1){
-                            if(w[j]=='='){
-                                words_iter.next();
+                        if(i>=1){
+                            for j in 0..(i-1){
+                                if(w[j]=='='){
+                                    words_iter.next();
+                                }
                             }
                         }
                         data="".to_string();

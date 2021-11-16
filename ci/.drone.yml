@@ -13,7 +13,7 @@ steps:
   
 - 
     name: push  
-    image: plugins/docker
+    image: plugins/buildah-docker
     settings:
         dockerfile: ci/Dockerfile
         repo: phyzaitlu/voj-judger 

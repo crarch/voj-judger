@@ -17,6 +17,7 @@ steps:
     settings:
         dockerfile: ci/Dockerfile
         repo: phyzaitlu/voj-judger 
+        daemon_off: false
         username:
             from_secret: docker_username
         password:

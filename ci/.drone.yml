@@ -20,8 +20,6 @@ steps:
             from_secret: docker_username
         password:
             from_secret: docker_password
-    commands:
-    -   cp target/release/voj_judger /release
         
     when:
         event: tag

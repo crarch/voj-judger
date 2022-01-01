@@ -13,25 +13,11 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    container:
-      image: rust:latest
-      volumes:
-      - /workspace:/github/workspace
     steps:
-    - uses: actions/checkout@v2
     - name: Build
-      run: cargo build --release --verbose
-    - name: Run tests
-      run: cargo test --verbose
+      uses: docker://rust:latest 
+      with:
+        args: cargo build --release --verbose
 
-  publish:
-
-    runs-on: ubuntu-latest
-    needs: build
-    container: 
-      image: docker
-      volumes:
-      - /workspace:/github/workspace
-    steps:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag voj-judger:$(date +%s)

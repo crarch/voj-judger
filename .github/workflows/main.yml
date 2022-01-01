@@ -28,7 +28,7 @@ jobs:
 
     runs-on: ubuntu-latest
     container: 
-      image: registry
+      image: docker
       volumes:
       - /workspace:/github/workspace
     steps:
